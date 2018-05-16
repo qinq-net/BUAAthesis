@@ -33,3 +33,6 @@
 *.thm
 *.pdf
 .DS_Store
+# Vim temporary files
+*.un~
+*.swp

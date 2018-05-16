@@ -1,3 +1,9 @@
+qin:
+	xelatex QIN.tex
+	-bibtex QIN.tex
+	xelatex QIN.tex
+	xelatex QIN.tex
+all: qin
 bachelor:
 	xelatex sample-bachelor.tex
 	-bibtex  sample-bachelor.aux
