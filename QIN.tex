@@ -1,9 +1,106 @@
 % !Mode:: "TeX:UTF-8"
+% vim: set foldmethod=marker sw=4 ts=4 noet:
 \documentclass[bachelor,openany,oneside,color]{buaathesis}
+
+% {{{ 导入宏包
+\usepackage{tikz,amsmath,amssymb}% for common math symbols
+	\usetikzlibrary{positioning,snakes}
+%%\usepackage{gensymb}%other sumbles as \degree
+\usepackage{booktabs}%for table \toprule and \bottomrule
+\usepackage{physics}
+\usepackage{bm}%for \bm{vector}
+\usepackage{braket}%for \bra and \ket
+%\usepackage{mathtools}%for correct \sum
+\usepackage{commath}%for \abs
+%\usepackage{mhchem} %for chemistry symbol \cm
+\usepackage{mathrsfs}%for \mathscr characters
+\usepackage{chngcntr,hyperref}%for hyperlink of reference
+\usepackage{etoolbox}%for \ifcsdef
+\usepackage{siunitx}%for units
+	\DeclareSIUnit\year{a}
+	\DeclareSIUnit\gauss{Gs}
+
+%\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}% page size
+%\usepackage[font=small,width=0.8\textwidth,labelfont=bf]{caption}%for caption font
+%\usepackage{subcaption} %for \subcaption{} for {subfigure}
+%\usepackage{longtable}%for longer tables
+%\usepackage{multirow}%for combined rows
+%\usepackage{changepage}%for displaying page number
+%\usepackage{fancyhdr}
+%	\pagestyle{fancy}
+%	\fancyhead{}
+%	\fancyhead[RO,LE]{\thepage}
+%	\fancyhead[LO,RE]{\SUBTITLE}
+%	\fancyfoot{}
+%	\renewcommand{\headrulewidth}{0pt}
+%	\renewcommand{\footrulewidth}{0pt}
+
+%\usepackage{autobreak,breqn}
+
+%%=== ntheorem ===
+%\usepackage[amsmath,thmmarks]{ntheorem}% for {theorem}
+%	\theoremstyle{plain}
+%	\theoremheaderfont{\normalfont\rmfamily\CJKfamily{hei}}
+%	\theorembodyfont{\normalfont\rm\CJKfamily{kai}}
+%	\theoremindent0em
+%	\theoremseparator{\hspace{1em}}
+%	\theoremnumbering{arabic}
+%	\theoremsymbol{■}          %symbol added after end of theorem
+%	\newtheorem{theorem}{Theorem}[subsection]
+%	\newtheorem{defn}{Definition}[subsection]
+
+%%=== lstlisting ===
+%\usepackage{listings,color}
+%	\definecolor{mygreen}{rgb}{0,0.6,0}
+%	\definecolor{mygray}{rgb}{0.9,0.9,0.9}
+%	\definecolor{mymauve}{rgb}{0.58,0,0.82}
+%	\lstset{ %
+%	  backgroundcolor=\color{mygray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+%	%  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+%	  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+%	  breaklines=true,                 % sets automatic line breaking
+%	  captionpos=b,                    % sets the caption-position to bottom
+%	  commentstyle=\color{mygreen},    % comment style
+%	  deletekeywords={...},            % if you want to delete keywords from the given language
+%	  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+%	  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+%	  frame=single,	                   % adds a frame around the code
+%	  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+%	  keywordstyle=\color{blue},       % keyword style
+%	  language=Mathematica,                 % the language of the code
+%	  morekeywords={*,...},           % if you want to add more keywords to the set
+%	  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+%	  numbersep=5pt,                   % how far the line-numbers are from the code
+%	  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+%	  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+%	  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+%	  showstringspaces=false,          % underline spaces within strings only
+%	  showtabs=false,                  % show tabs within strings adding particular underscores
+%	  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+%	  stringstyle=\color{mymauve},     % string literal style
+%	  tabsize=2,	                   % sets default tabsize to 2 spaces
+%	  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+%	}
+
+%% define math operators
+\def\D{\mathrm{d}}
+\def\Ln{\mathrm{ln}}
+\def\CH{\mathrm{CH}}
+\def\FWHM{\mathrm{FWHM}}
+\def\figureinit{\centering\setlength\parindent{0pt}}
+% }}}
+
 \begin{document}
 
+% {{{ 前缀部分
 % 用户信息
 \include{data/com_info}
+\makeatletter
+\hypersetup{
+	pdftitle={\buaa@thesistitle},
+	pdfauthor={\buaa@thesisauthor}
+}
+\makeatother
 \include{data/bachelor/bachelor_info}
 
 % 任务书信息
@@ -20,15 +117,150 @@
 
 % 正文页码样式
 \mainmatter
+% }}}
 
-% 正文
-%\include{data/chapter1-intro}
-%\include{data/chapter2-config}
-%\include{data/chapter3-download}
-%\include{data/chapter4-basic}
-%\include{data/chapter5-usage}
-%\include{data/chapter6-implement}
-%\include{data/chapter7-conclusion}
+%% 正文
+\chapter{绪论}
+% {{{ 绪论
+
+\section{课题背景}
+
+在中高能粒子物理的实验研究中，对实验环境和探测器响应的模拟是实验准备阶段的一大核心
+工作。根据这些模拟的结果，可以在实验准备阶段确定实验对不同探测器的性能提出的要求，
+以评价和调整实验方案。目前，对粒子物理的模拟研究主要基于Geant 4模拟框架。该框架是一
+套C++软件框架，提供了一套根据给定的物理过程列表追踪粒子及其次级粒子的工具。用户需要
+使用C++语言编写或重载有关的类，以构建探测器、其数字化模块和场等其他环境因素。这种形
+式意味着需要针对每个模拟问题构建一个新的模拟应用程序，并设计其数字化和数据存储与处
+理的有关功能。
+
+\section{国内外研究现状}
+
+%%CEE
+\subsection{CSR外靶实验（CEE）}
+
+本研究所称的“HIRFL-CSR外靶实验”，指的是利用中科院近代物理研究所的重离子加速器提供的
+束流进行重离子碰撞外靶实验（CSR External-target Experiment，CEE）。
+
+该实验已经立项搭建低温高密核物质测量谱仪。该谱仪的测量手段为，利用大接收度的超导磁铁
+，通过时间投影室、硅像素、高计数率飞行时间谱仪等多种国内首次采用的先进探测器，配合先
+进的电子学技术，实现对中能重离子碰撞产物的全空间探测和鉴别。本研究的主要内容就是基于
+CEE的设计构建软件层面的终端模拟和分析框架。
+
+该实验将构建低温高密核物质测量谱仪，通过相对论重离子碰撞实验实现QCD相变。国际上已经
+有多个类似的重离子碰撞实验，但基本运行在高能区。
+\begin{itemize}
+	\item 美国的相对论重离子对撞机（RHIC），每对核子对撞能量达\SI{200}{\giga\eV}；
+	\item 欧洲核子中心的大型强子对撞机（LHC），能量可达\SI{5.4}{\tera\eV}，以寻找
+		高温夸克胶子等离子体并探索其性质；
+	\item 德国的反质子-离子研究装置（FAIR）上将要运行的压缩强子物质实验（CBM），
+		每核子能量达\SI{45}{\giga\eV}，主要目的是探索高密QCD相变和临界点。
+\end{itemize}
+国际上已有的重离子碰撞实验鲜有涉及低温而更高重子化学势（重子数密度）的区域，这一区
+域恰好是HIRFL-CSR和将来HIAF装置将覆盖的区域。RIEFL-CSR能够提供$0.5\sim\SI{1.2}
+	{\giga\eV}$的离子束流，QCD相图在这一区域有非常丰富的结构和与恒星演化密切相关的
+状态方程信息。
+
+%%GSI
+\subsection{终端模拟和分析框架}
+
+终端模拟和分析框架指的是构建一套软件框架，对探测器进行构建、模拟和数字化（digitize，
+指将模拟中探测器灵敏的物理量转换为读出系统的实际输出）。核物理与高能物理领域内常用到
+模拟框架Geant 4与分析框架ROOT。Geant 4需要为每个模拟问题专门编写程序，构建探测器并存
+储所需的物理信息；ROOT主要用于对数据的统计分析。
+
+以上述德国的FAIR装置为例，GSI开发了一套面向对象的模拟、重建和数据分析框架FairRoot。
+该框架下可以将每个探测器构建为由数字化参数构建、几何参数构建、蒙特卡洛模拟等若干个
+类组成的类库，还可以实现粒子轨迹的可视化等针对整个外靶实验的功能。FAIR上正在筹备的
+CBM实验基于该框架构建了数据分析软件CbmRoot，其中构建了其中用到的各探测器及其布局，
+能够对整个实验进行模拟、重建和事件显示等。
+
+\section{课题目的}
+
+本研究的主要目的是基于HIRFL-CSR外靶实验的设计和实际情况，构建终端模拟和分析框架。
+经过调研，构建框架至少需要完成以下的工作。
+\begin{enumerate}
+	\item 构建探测器：对每种类型的探测器都至少需要完成以下工作：
+	\begin{enumerate}
+		\item 读取探测器的几何参数，构建探测器的几何形态；
+		\item 读取和构建探测器的材料信息；
+		\item 设计各种探测器的数字化模块，基于探测器的工作原理给出读出系统的输出；
+	\end{enumerate}
+		以实现对探测器主要功能的模拟。
+	\item 基于HIRFL-CSR的实际情况，构建粒子源和物理列表；
+	\item 基于外靶实验的设计，构建实验环境的电磁场等因素；
+	\item 调用以上构建出来的框架，实现对整个实验的模拟、数字化和重建等功能；
+	\item 调用分析框架提供的显示功能，实现对事件进行可视化的功能。
+\end{enumerate}
+
+\section{论文构成及研究过程}
+
+\subsection{论文构成}
+
+本论文将主要围绕CEE实验概况、模拟框架的主体结构、关键技术难点的实现和模拟样例与分析
+四部分展开。其中，实验概况将介绍CEE实验的物理目标、计划选用的探测器类型与功能，以及
+实验的探测器布局等信息，以作为本文的构建基础；主体结构将介绍本框架所划分的主要模块及
+其功能；关键技术难点将介绍MRPC、TPC和MWDC三种探测器的数字化实现原理，以及径迹重建的
+基本原理。
+
+\subsection{研究过程}
+
+本研究主要围绕Geant 4框架的学习和对探测器原理的学习逐渐展开，工作过程大致可以分为以
+下的几个阶段。
+\begin{enumerate}
+	\item 1--2月：调研模拟框架的原理，学习基础知识；
+	\item 3月：实现简单的几何构建，实现粒子源、物理列表和材料构建；
+	\item 4月：完成几何构建，实现简单的数字化模块；
+	\item 5月：实现关键探测器的数字化功能，分析输出结果。
+\end{enumerate}
+% }}}
+
+\chapter{CEE实验概况}
+% {{{ CEE实验概况
+
+\section{物理目标}
+
+\section{主要探测器}
+
+\section{实验布局}
+
+% }}}
+
+\chapter{模拟框架的主体结构}
+% {{{ 模拟框架的主体结构
+
+\section{几何构建}
+
+\section{材料模块}
+
+\section{数字化模块}
+
+\section{电磁场模块}
+
+\section{粒子源与物理列表}
+% }}}
+
+\chapter{关键技术难点}
+% {{{ 关键技术难点
+
+\section{关键探测器的数字化实现}
+
+\subsection{MRPC}
+\subsection{TPC}
+\subsection{MWDC}
+
+\section{径迹重建的基本原理}
+
+% }}}
+
+\chapter{模拟样例与分析}
+
+% {{{ 模拟样例与分析
+% }}}
+
+\chapter*{结论}
+
+% {{{ 结论
+% }}}
 
 % 致谢
 \include{data/bachelor/acknowledgement}
@@ -37,6 +269,6 @@
 
 % 附录
 \appendix
-\include{data/appendix1-faq}
-\include{data/appendix2-contactus}
+%\include{data/appendix1-faq}
+%\include{data/appendix2-contactus}
 \end{document}
