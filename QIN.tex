@@ -20,10 +20,12 @@
 %\usepackage{mhchem} %for chemistry symbol \cm
 \usepackage{mathrsfs}%for \mathscr characters
 \usepackage{chngcntr,hyperref}%for hyperlink of reference
+\usepackage{cleveref}
 \usepackage{etoolbox}%for \ifcsdef
 \usepackage{siunitx}%for units
 	\DeclareSIUnit\year{a}
 	\DeclareSIUnit\gauss{Gs}
+\def\TZ{T\textsubscript{0}}
 
 %\usepackage[top=1in, bottom=1in, left=1.25in, right=1.25in]{geometry}% page size
 %\usepackage[font=small,width=0.8\textwidth,labelfont=bf]{caption}%for caption font
@@ -266,7 +268,7 @@ CEE所用的磁场本质上是服务于径迹探测器中的时间投影室探�
 TPC）的，因此其可以被简化为覆盖一个包覆了TPC探测器的固定尺寸的长方体范围的
 局域匀强磁场。
 
-\subsection{微像素定位探测器}
+\subsection{微像素定位探测器}\label{ssec:det:track}
 
 微像素定位探测器主要用于提供束流的入射方向以及对发生反应的顶点位置进行精密测量。
 这一探测器相当于对束流的主要参数进行限定。在本框架内，这一探测器的功能可以由对
@@ -278,17 +280,18 @@ TPC）的，因此其可以被简化为覆盖一个包覆了TPC探测器的固�
 的径迹探测器主要有时间投影室（Time Projection Chamber, TPC）和
 多丝漂移室（MWDC）。
 
-\subsubsection{TPC探测器}
+\subsubsection{时间投影室（TPC）}
 
 TPC探测器的主要原理是在气体漂移室探测器中加以匀强电场，使入射粒子在灵敏区内产生的
 带电次级粒子受到的电场力与气体内的阻力平衡，从而使次级粒子沿电场方向做匀速运动，
 以将粒子在电场方向的径迹位置投影为漂移时间；在垂直电场方向的平面上设置空间灵敏的
-收集阵列收集次级粒子，从而得到垂直电场方向的位置信息。一般为了简化探测器结构，磁场
-和电场在同一方向上。例如，假设次级粒子在漂移室内
-运动所受阻力为$\bm{F}_\nu=-\alpha\bm{v}$（$\alpha$为阻力系数，$\bm{v}$为粒子速度）
-，平衡状态下粒子运动方向应当与电场方向平行，并满足电场力与阻力平衡：
-\begin{equation}
-\bm{F}_\nu+q\bm{E}=-\alpha\bm{v}+q\bm{E}=0
+GEM雪崩放大及感应阵列探测次级粒子（时间信息来自漂移速度快的电子），从而得到垂直
+电场方向的位置信息。一般为了简化探测器结构，磁场和电场在同一方向上。例如，假设
+次级粒子在漂移室内运动所受阻力为$\bm{F}_\nu=-\alpha\bm{v}$（$\alpha$为阻力系数，
+$\bm{v}$为粒子速度），平衡状态下粒子运动方向应当与电场方向平行，并满足电场力与
+阻力平衡：
+\begin{equation}\label{eq:det:TPC:eq}
+	\bm{F}_\nu+q\bm{E}=-\alpha\bm{v}+q\bm{E}=0
 \end{equation}
 其中$q$为次级粒子所带电荷；$\bm{E}$为TPC内的匀强电场。因此，对于一定的粒子（具有
 确定的阻力系数和电荷量），其漂移速度是一个定值。
@@ -297,7 +300,7 @@ TPC探测器的主要原理是在气体漂移室探测器中加以匀强电场�
 中划过径迹的位置，在垂直于电场的方向上划分为若干灵敏块（按照各个读出单元的
 灵敏范围），并记录每个灵敏块的能量沉积漂移时间。
 
-\subsubsection{MWDC探测器}
+\subsubsection{多丝漂移室（MWDC）}
 
 CEE中采用的多丝漂移室系统由六块MWDC组成，分别配置在上述磁铁下游方向的束流线两侧，
 每侧分别平行放置三块；每块MWDC由三层成角度的灵敏丝层组成。当粒子穿过MWDC时，在
@@ -310,7 +313,7 @@ CEE中采用的多丝漂移室系统由六块MWDC组成，分别配置在上述�
 
 CEE实验拟采用的飞行时间探测器均为多层MRPC阵列，主要包括磁场外部、束流线下游的
 端盖飞行时间探测器（eTOF），磁铁轭铁与TPC之间的内部飞行时间探测器（iTOF）和
-起始时间探测器（T0）。
+起始时间探测器（\TZ）。
 
 这些飞行时间探测器的本质均为多层MRPC阵列，可以抽象为对时间和位置灵敏的探测器，
 可以为每组输出起始时间和信号到达两端的时间差（反映一维位置信息）。
@@ -321,6 +324,23 @@ ZDC位于探测器系统的最后，可以接收到受磁场偏转影响较小�
 为铅和闪烁体夹层，可以读出事件沉积的总能量。
 
 \section{实验布局}
+
+CEE拟利用粒子在磁场中的偏转，通过测量粒子的径迹和飞行时间实现对粒子动量的重建
+和种类鉴别。\cite{技术文档}CEE谱仪的核心部件为大接收度的二极磁铁与置于磁场内的
+实现三维测量的TPC；为处理束流附近的死区，磁场下游方向束流两侧布置有两组MWDC
+阵列；为实现轻粒子甄别，在TPC外和MWDC后设置有以MRPC阵列组成的飞行时间探测器
+（TOF）和时间起始探测器\TZ；最后设置有零度角量能器ZDC。整体构型如图
+\ref{fig:CEE:Subsystem}所示。
+
+\begin{figure}\centering
+	\includegraphics[width=0.9\textwidth]{./resource/CEE-Subsystem.png}
+	\captionsetup{width=0.9\textwidth}
+	\caption{CEE各子系统示意图。包括：SC-Dipole：超导二极磁铁；
+		SiPiX：硅像素定位探测器；\TZ：起始时间探测器；TPC：中心时间投影室；
+		iTOF：内飞行时间探测器；eTOF，端盖飞行时间探测器；
+		MWDC：前角多丝漂移室径迹探测器；ZDC：零度角量能器}
+	\label{fig:CEE:Subsystem}
+\end{figure}
 
 % }}}
 
@@ -350,7 +370,7 @@ Volume）。这一过程中，构建函数将会从纯文本格式的数据文�
 和摆放位置生成其物理体积（Physical Volume）。各类还提供了一个函数GetSensitiveLVs，
 返回所有灵敏区的逻辑体积列表，以方便数字化过程中判断粒子是否进入了灵敏区。
 
-T0、iTOF和eTOF等飞行时间探测器在构建时，探测器均被视为MRPC阵列，构建时先构建整个
+\TZ、iTOF和eTOF等飞行时间探测器在构建时，探测器均被视为MRPC阵列，构建时先构建整个
 探测器，然后是各个单元探测器，之后是各单元探测器内的各个MRPC，最后是各MRPC内的每一层
 玻璃；由于读出时所用的读出层（PCB板）和有关的电路对高能离子的径迹影响有限，因此没有
 构建。
@@ -384,9 +404,9 @@ ProcessHits函数，以构建一个Hit来存储事件的有关信息。
 
 在ConstructSDandField函数中构建灵敏探测器时，本框架首先为每个探测器实例化了其
 灵敏探测器类，在其构建函数中注册了以上实现的对应记录：其中，TPC注册了Step记录和
-专门实现的TPC记录（本模块将在第\autoref{ssec:TPC记录}节中介绍）；T0、eTOF、iTOF
-等时间灵敏探测器注册了起始时间和MRPC记录（见第\autoref{ssec:MRPC记录}节）；MWDC
-注册了Step记录和MWDC记录（见第\autoref{ssec:MWDC记录}节）。随后，从几何构建模块
+专门实现的TPC记录（本模块将在第\ref{ssec:digi:TPC}节中介绍）；\TZ、eTOF、iTOF
+等时间灵敏探测器注册了起始时间和MRPC记录（见第\ref{ssec:digi:MRPC}节）；MWDC
+注册了Step记录和MWDC记录（见第\ref{ssec:digi:MWDC}节）。随后，从几何构建模块
 调用GetSensitiveLVs函数取得了灵敏区的逻辑体积，并将对应的探测器绑定给了各个
 探测器的灵敏区。由于本框架内没有利用一个逻辑体积重复创建多个几何体，因此所有
 探测器模块均有各自的灵敏探测器实例。
@@ -423,19 +443,68 @@ EndOfEventAction中调用了各个探测器的各个记录器的PrintAll函数�
 本框架基于对TPC、MRPC和MWDC三种探测器模块的原理分析，充分利用Geant4等框架提供
 的方法，实现了对这三种探测器的数字化。
 
-\subsection{TPC记录}
+\subsection{TPC记录}\label{ssec:digi:TPC}
 
-CEE所采用的TPC的基本原理
+CEE所采用的TPC的基本原理已经在第\ref{ssec:det:track}节中得到介绍。在本框架中，
+TPC被简化为一个对空间和时间灵敏的探测器。以下是本框架中构建的TPC的主要原理和
+实现思路。
 
-\subsection{MRPC记录}
-\subsection{MWDC记录}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{./resource/CEE-TPC-Overview.png}
+	\caption{TPC结构示意图：下部为阴极，上部为阳极，四周围以加有阶梯电压的
+		金属条（红蓝的条状物）；内部为灵敏区}
+	\label{fig:det:TPC:Overview}
+\end{figure}
+
+CEE采用的TPC的结构如图\ref{fig:det:TPC:Overview}所示，上部为读出板。读出板
+下方设置有一个大面积GEM膜，可以对漂移到TPC顶部的电子进行雪崩放大。读出板上
+设置有12000个读出单元\cite{技术文档}，带电粒子
+进入TPC后，其在灵敏区内产生的次级粒子将被竖直方向在读出板上投影位置的
+读出单元感应到，从而由其在读出板上的投影给出其在水平平面内的位置信息；
+利用式\ref{eq:det:TPC:eq}，次级粒子（电子）在TPC内近似以匀速运动，其飞行时间
+（从电离到飞行至GEM被记录板感应到的飞行时间）被用于确定事件在竖直方向的位置。
+
+在本框架中，这一过程被抽象为：首先将探测器按照读出板上的读出单元分成若干个小室，
+每个小室对应一个读出单元的灵敏区；粒子进入TPC时，在每个小室内产生的总能量损失和
+发生事件的位置与时间会被记录。这里与上述原理主要的区别是本框架内为了提高模拟效率，
+只构建了TPC内的磁场，而暂时还没有构建TPC内的电场，也没有模拟电子真实的漂移过程
+或在GEM上的雪崩放大；因此，我们假设电离产生的次级电子会在TPC内短时间内减速而
+失去其初始动能（从而忽略减速过程中所受的电场作用），随后受到电场力作用匀速到达
+GEM膜而被放大和被探测到；
+%TODO：考虑复合
+其中，目前本框架尚未考虑这两个过程中被复合而损失的电子，
+因此本框架记录和存储的是所有终止在TPC内的电子的位置和时间信息。
+
+事实上，由于TPC中所有次级电子最终都是匀速飞向记录板的，因此TPC并不对康普顿效应、
+各种热效应等不产生次级电子的能量损失敏感，而是只对次级电子的产生敏感；因此，
+本框架在完成TPC的数字化过程时，可以认为TPC的输出结果就是每个记录单元所应当
+感应到的电子数目和触发该记录单元的时间。目前本框架在每个模拟事件结束时，
+将这些电子归入设定好的小室，确定每个次级电子将会被哪个或哪些记录单元记录到；
+最后输出每个记录单元所应当记录到的电子个数和触发时间。
+%TODO：考虑死时间
+这一过程中，本框架暂时没有考虑记录板的死时间问题，因此记录下来的是飞行到GEM膜
+的总电子数目；
+%TODO：Y坐标与时间的关系
+尽管次级电子在TPC内匀速运动，但具体的竖直方向坐标与漂移时间的关系还需要实验
+定标，本框架目前近似认为感应到信号所花的时间就是电子以一定的漂移速度
+\SI{5}{\centi\meter/\micro\second}飞行到GEM膜的时间。
+
+本框架的TPC记录器将模拟得到的数据存储在一个以各个电子的跟踪编号（TrackID）为
+键值的字典对象中，为每个键值存储其最后一次被跟踪时的位置和时间；飞出TPC的
+电子对应的记录将被清除，因为其将无法在TPC中受到电场作用而飞向GEM膜，从而不会
+被TPC感应到；相反，在TPC外电离产生而飞入TPC的电子将会被记录。本框架的输出系统
+会在每次事件结束时先输出各个次级电子的跟踪信息（编号、最后位置和时间），再输出
+每个读出单元所应当读到的电子数目与触发时间。
+
+\subsection{MRPC记录}\label{ssec:digi:MRPC}
+\subsection{MWDC记录}\label{ssec:digi:MWDC}
 
 \section{径迹重建的基本原理}
 
 % }}}
 
 \chapter{模拟样例与分析}
-
 % {{{ 模拟样例与分析
 % }}}
 
