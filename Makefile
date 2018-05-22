@@ -1,6 +1,6 @@
 qin:
 	xelatex QIN.tex
-	-bibtex QIN.tex
+	-biber QIN
 	xelatex QIN.tex
 	xelatex QIN.tex
 all: qin
@@ -16,6 +16,6 @@ master:
 	xelatex sample-master.tex
 clean:
 	find . -name '*.aux' -print0 | xargs -0 rm -rf
-	rm -rf *.lof *.log *.lot *.out *.toc *.bbl *.blg *.thm
+	rm -rf *.lof *.log *.lot *.out *.toc *.bbl *.blg *.thm *.bcf
 depclean: clean
 	rm -rf *.pdf
