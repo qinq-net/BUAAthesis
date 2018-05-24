@@ -57,38 +57,38 @@
 %	\newtheorem{theorem}{Theorem}[subsection]
 %	\newtheorem{defn}{Definition}[subsection]
 
-%%=== lstlisting ===
-%\usepackage{listings,color}
-%	\definecolor{mygreen}{rgb}{0,0.6,0}
-%	\definecolor{mygray}{rgb}{0.9,0.9,0.9}
-%	\definecolor{mymauve}{rgb}{0.58,0,0.82}
-%	\lstset{ %
-%	  backgroundcolor=\color{mygray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
-%	%  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
-%	  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
-%	  breaklines=true,                 % sets automatic line breaking
-%	  captionpos=b,                    % sets the caption-position to bottom
-%	  commentstyle=\color{mygreen},    % comment style
-%	  deletekeywords={...},            % if you want to delete keywords from the given language
-%	  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
-%	  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
-%	  frame=single,	                   % adds a frame around the code
-%	  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-%	  keywordstyle=\color{blue},       % keyword style
-%	  language=Mathematica,                 % the language of the code
-%	  morekeywords={*,...},           % if you want to add more keywords to the set
-%	  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
-%	  numbersep=5pt,                   % how far the line-numbers are from the code
-%	  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
-%	  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
-%	  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
-%	  showstringspaces=false,          % underline spaces within strings only
-%	  showtabs=false,                  % show tabs within strings adding particular underscores
-%	  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
-%	  stringstyle=\color{mymauve},     % string literal style
-%	  tabsize=2,	                   % sets default tabsize to 2 spaces
-%	  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
-%	}
+%=== lstlisting ===
+\usepackage{listings,color}
+	\definecolor{mygreen}{rgb}{0,0.6,0}
+	\definecolor{mygray}{rgb}{0.9,0.9,0.9}
+	\definecolor{mymauve}{rgb}{0.58,0,0.82}
+	\lstset{ %
+	  backgroundcolor=\color{mygray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+	  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+	  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+	  breaklines=true,                 % sets automatic line breaking
+	  captionpos=b,                    % sets the caption-position to bottom
+	  commentstyle=\color{mygreen},    % comment style
+	  deletekeywords={...},            % if you want to delete keywords from the given language
+	  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+	  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+	  frame=single,	                   % adds a frame around the code
+	  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+	  keywordstyle=\color{blue},       % keyword style
+	  language=Mathematica,                 % the language of the code
+	  morekeywords={*,...},           % if you want to add more keywords to the set
+	  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+	  numbersep=5pt,                   % how far the line-numbers are from the code
+	  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+	  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+	  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+	  showstringspaces=false,          % underline spaces within strings only
+	  showtabs=false,                  % show tabs within strings adding particular underscores
+	  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+	  stringstyle=\color{mymauve},     % string literal style
+	  tabsize=2,	                   % sets default tabsize to 2 spaces
+	  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+	}
 
 %% define math operators
 \def\D{\mathrm{d}}
@@ -429,7 +429,7 @@ MWDC被配置于束流的左右两边，每边平行配置三组；由于CEE采�
 
 为存取各探测器和其他几何体的材料信息，本框架提供了一个材料库类，并在其中构建了
 探测器所需的各种材料。其中包括部分探测器灵敏区所使用的混合气体。
-%%还需要更多信息
+%%TODO：还需要更多信息
 
 \section{电磁场模块}
 
@@ -591,12 +591,63 @@ CEE中所用到的多丝漂移室由六块MWDC组成，在束流通过的方向�
 参与任何其他的事件。本框架的输出系统最后会输出所有被认为有效的触发信息，以用于进一步
 分析。
 
-\section{径迹重建的基本原理}
+\section{数据输出}
+
+本框架目前在每个Event的末尾，通过调用各个记录器的输出函数，直接将已经记录到各个
+记录器的存储数据库中的记录数据直接输出到纯文本文件，按照每个Event产生一个记录文件
+的方式输出。本框架目前使用一个函数模板实现对这些数据的输出；需要分析较大量的模拟
+数据时，可以替换这一模板，将数据录入到ROOT等分析框架的数据结构中。在本文第
+\ref{chap:例子}中会以一个模拟事件为例具体分析输出的结果。
+
+\section{径迹重建的基本原理}%%TODO：补充
 
 % }}}
 
-\chapter{模拟样例与分析}
+\chapter{模拟样例与分析}\label{chap:例子}
 % {{{ 模拟样例与分析
+
+本章将介绍本框架输出的模拟事件及对这些输出结果进行分析的一般方法。
+
+\section{样例条件}
+
+本章预备分析的模拟事件为采用本框架按照CEE预想预设的几何和材料等参数进行的对单个
+入射粒子的模拟，入射粒子位于TPC正后方（即Z轴负半轴上）\SI{800}{\milli\meter}处、
+具有能量\SI{250}{\mega\eV/u}，方向沿探测器系统的主轴（即Z轴正方向）。框架编译为
+单线程运行模式，并启用Geant4提供的Qt 4界面和OpenGL支持；运行时将Geant4 OpenGL的
+允许显示单元数增加到1000000，以显示所需的大量探测器单元与束流径迹。
+
+\section{事件显示}
+
+样例模拟事件在本框架中可以利用模拟数据立即得到如图\ref{fig:EventDisplay}的显示。
+可以看到，主径迹穿过\TZ、TPC后向X轴正方向（左侧）偏转，略过左侧的MWDC1、MWDC2、
+MWDC3和eTOF1，最终到达ZDC。
+
+\section{飞行时间测量}%%TODO:补充
+
+\section{径迹测量}
+
+径迹测量主要包括利用TPC和MWDC对粒子径迹的捕捉。
+
+\section{TPC}
+
+粒子在TPC中会发生偏转，过程中产生的次级电子将会漂移到记录板下方的GEM膜而被感应到。
+本框架在输出过程中首先记录了每个次级粒子在TPC中进入漂移的位置和信息，随后为每个
+记录单元计算了其最先记录到的感应信号的时间和飞到GEM膜被放大的次级电子的数目。
+例如，样例事件首先得到了以下的针对每个次级电子输出：
+
+\lstinputlisting[frame=single,firstline=2527,lastline=2537,numbers=left]
+{./resource/EventExampleOut.txt}
+
+每行记录了一个在TPC内进入漂移的次级电子最后所在的位置和时间；其中，XZ方向（平行于
+记录板）的位置记录的是其漂移最终将产生信号的记录单元的编号。随后，本框架计算了每个
+记录单元应当产生信号的强度和时间，并产生以下输出：
+
+\lstinputlisting[frame=single,firstline=3322,lastline=3324,numbers=left]
+{./resource/EventExampleOut.txt}
+
+其中记录了每个记录单元（其灵敏区被称作小室，Cell）所应当感应到的次级电子的数目和
+产生信号的时间。
+
 % }}}
 
 \chapter*{结论}
