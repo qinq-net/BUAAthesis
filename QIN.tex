@@ -25,6 +25,7 @@
 \usepackage{siunitx}%for units
 	\DeclareSIUnit\year{a}
 	\DeclareSIUnit\gauss{Gs}
+\usepackage{subcaption}
 \def\TZ{T\textsubscript{0}}
 \def\PrimaryParticle{\textsuperscript{12}C}
 
@@ -57,37 +58,37 @@
 %	\newtheorem{theorem}{Theorem}[subsection]
 %	\newtheorem{defn}{Definition}[subsection]
 
-%=== lstlisting ===
-\usepackage{listings,color}
-	\definecolor{mygreen}{rgb}{0,0.6,0}
-	\definecolor{mygray}{rgb}{0.9,0.9,0.9}
-	\definecolor{mymauve}{rgb}{0.58,0,0.82}
+%%=== lstlisting ===
+%\usepackage{listings,color}
+%	\definecolor{mygreen}{rgb}{0,0.6,0}
+%	\definecolor{mygray}{rgb}{0.9,0.9,0.9}
+%	\definecolor{mymauve}{rgb}{0.58,0,0.82}
 	\lstset{ %
-	  backgroundcolor=\color{mygray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+%	  backgroundcolor=\color{mygray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
 	  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
-	  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
-	  breaklines=true,                 % sets automatic line breaking
-	  captionpos=b,                    % sets the caption-position to bottom
-	  commentstyle=\color{mygreen},    % comment style
-	  deletekeywords={...},            % if you want to delete keywords from the given language
-	  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
-	  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
-	  frame=single,	                   % adds a frame around the code
-	  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-	  keywordstyle=\color{blue},       % keyword style
-	  language=Mathematica,                 % the language of the code
-	  morekeywords={*,...},           % if you want to add more keywords to the set
-	  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
-	  numbersep=5pt,                   % how far the line-numbers are from the code
-	  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
-	  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
-	  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
-	  showstringspaces=false,          % underline spaces within strings only
-	  showtabs=false,                  % show tabs within strings adding particular underscores
-	  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
-	  stringstyle=\color{mymauve},     % string literal style
-	  tabsize=2,	                   % sets default tabsize to 2 spaces
-	  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+%	  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+%	  breaklines=true,                 % sets automatic line breaking
+%	  captionpos=b,                    % sets the caption-position to bottom
+%	  commentstyle=\color{mygreen},    % comment style
+%	  deletekeywords={...},            % if you want to delete keywords from the given language
+%	  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+%	  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+%	  frame=single,	                   % adds a frame around the code
+%	  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+%	  keywordstyle=\color{blue},       % keyword style
+%	  language=Mathematica,                 % the language of the code
+%	  morekeywords={*,...},           % if you want to add more keywords to the set
+%	  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+%	  numbersep=5pt,                   % how far the line-numbers are from the code
+%	  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+%	  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+%	  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+%	  showstringspaces=false,          % underline spaces within strings only
+%	  showtabs=false,                  % show tabs within strings adding particular underscores
+%	  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+%	  stringstyle=\color{mymauve},     % string literal style
+%	  tabsize=2,	                   % sets default tabsize to 2 spaces
+%	  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
 	}
 
 %% define math operators
@@ -570,7 +571,7 @@ CEE中所用到的多丝漂移室由六块MWDC组成，在束流通过的方向�
 \begin{figure}
 	\centering
 	\includegraphics[width=0.8\textwidth]{./resource/CEE-MWDC-Layer.png}
-	\caption{MWDC的阳极丝几何角度示意图}
+	\caption{MWDC的阳极丝几何角度示意图}\label{fig:det:MWDC:Layer}
 \end{figure}
 
 在本框架中，MWDC系统实际上是一套位置灵敏探测器。本框架假设MWDC由均匀分布的三层灵敏层
@@ -625,7 +626,7 @@ MWDC3和eTOF1，最终到达ZDC。
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./resource/EventDisplay.png}
-	\caption{模拟事件显示}\ref{fig:EventDisplay}
+	\caption{模拟事件显示}\label{fig:EventDisplay}
 \end{figure}
 
 \section{飞行时间测量}%%TODO:补充
@@ -634,22 +635,37 @@ MWDC3和eTOF1，最终到达ZDC。
 
 径迹测量主要包括利用TPC和MWDC对粒子径迹的捕捉。
 
-\section{TPC}
+\subsection{TPC}
 
 粒子在TPC中会发生偏转，过程中产生的次级电子将会漂移到记录板下方的GEM膜而被感应到。
 本框架在输出过程中首先记录了每个次级粒子在TPC中进入漂移的位置和信息，随后为每个
 记录单元计算了其最先记录到的感应信号的时间和飞到GEM膜被放大的次级电子的数目。
 例如，样例事件首先得到了以下的针对每个次级电子输出：
 
-\lstinputlisting[firstline=2527,lastline=2537]
-{./resource/EventExampleOut.txt}
+\begin{lstlisting}[firstnumber=2527,lastline=2537]
+ >> TrackID=994 CellXZ={0,-40} positionY=0.84114303933323mm Time=6.0892626981358ns
+ >> TrackID=995 CellXZ={1,-40} positionY=1.0856891543324mm Time=6.1063259562462ns
+ >> TrackID=996 CellXZ={0,-39} positionY=0.84593019536582mm Time=6.1126850323071ns
+ >> TrackID=997 CellXZ={0,-38} positionY=0.84928351818984mm Time=6.1289823275534ns
+ >> TrackID=998 CellXZ={0,-38} positionY=0.85008937871035mm Time=6.1327786700093ns
+ >> TrackID=999 CellXZ={0,-38} positionY=-0.28073218386915mm Time=6.1733665062668ns
+ >> TrackID=1000 CellXZ={0,-38} positionY=0.85137504059712mm Time=6.1389167634394ns
+ >> TrackID=1001 CellXZ={1,-37} positionY=0.85273555675272mm Time=6.145267996147ns
+ >> TrackID=1002 CellXZ={1,-37} positionY=-29.312180238961mm Time=6.7354566998437ns
+ >> TrackID=1003 CellXZ={1,-36} positionY=0.85588526329872mm Time=6.1601625652366ns
+ >> TrackID=1004 CellXZ={1,-34} positionY=-14.096524825403mm Time=7.5405283653648ns
+\end{lstlisting}
+%{./resource/EventExampleOut.txt}
 
 每行记录了一个在TPC内进入漂移的次级电子最后所在的位置和时间；其中，XZ方向（平行于
 记录板）的位置记录的是其漂移最终将产生信号的记录单元的编号。随后，本框架计算了每个
 记录单元应当产生信号的强度和时间，并产生以下输出：
 
-\lstinputlisting[firstline=3322,lastline=3324]
-{./resource/EventExampleOut.txt}
+\begin{lstlisting}[firstnumber=3322,lastline=3324]
+ >>> Cell:{0,-39} ElectronCount=1 SignalTime=7989.194081125ns
+ >>> Cell:{0,-38} ElectronCount=5 SignalTime=7989.1114159515ns
+ >>> Cell:{0,-36} ElectronCount=4 SignalTime=7975.923419349ns
+\end{lstlisting}
 
 其中记录了每个记录单元（其灵敏区被称作小室，Cell）所应当感应到的次级电子的数目和
 产生信号的时间。因此，本数据中TPC得到的输出结果可以表示为图\ref{fig:result:TPC}。
@@ -658,6 +674,91 @@ MWDC3和eTOF1，最终到达ZDC。
 	\centering
 	\includegraphics[width=0.7\textwidth]{./resource/TPC-result.png}
 	\caption{TPC的输出结果，方框内为事件显示}\label{fig:result:TPC}
+\end{figure}
+
+\subsection{MWDC}
+
+粒子经过MWDC时，可以在不同层的灵敏丝上产生不同的触发；利用各层丝上产生的触发，可以确定
+粒子在MWDC不同层上经过的位置，从而确定粒子的径迹。
+
+以示例数据为例，粒子扫过了MWDC1、MWDC2和MWDC3的边缘部分。其中，MWDC1没有有效的输出，
+这是因为粒子在MWDC1边缘扫过、没有直接通过灵敏丝的位置。MWDC2得到的数据较多：
+
+\begin{lstlisting}[firstnumber=3760,lastline=3768]
+ >> TrackID=2441 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.79574191275058mm kinectEnergy=0.0013347791164896MeV Time=15.448136778109ns
+ >> TrackID=2442 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.55299259180971mm kinectEnergy=0.00099998100030243MeV Time=15.449487217747ns
+ >> TrackID=2443 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.17917100100296mm kinectEnergy=0.0076359880601445MeV Time=15.451757749434ns
+ >> TrackID=2444 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.15478643574694mm kinectEnergy=0.0034406043691271MeV Time=15.452845531017ns
+ >> TrackID=2488 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.22157933910984mm kinectEnergy=0.0010444254739243MeV Time=15.679155449858ns
+ >> TrackID=2489 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.31380331751161mm kinectEnergy=0.0047784269276724MeV Time=15.679684315556ns
+ >> TrackID=2490 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.36731948804126mm kinectEnergy=0.015550419137255MeV Time=15.679985953123ns 
+ >> TrackID=8715 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.32972618890013mm kinectEnergy=0.0012848935385169MeV Time=15.686946665181ns
+ >> TrackID=8719 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.11761704911904mm kinectEnergy=0.0016395460083186MeV Time=15.453562844286ns
+\end{lstlisting}
+
+这意味着粒子在X丝（编号为0）和U丝（编号为1）上分别触发了编号为-286和-253的丝（负编号
+意味着在x方向上位于中间丝的右侧，正编号意味着左侧）。考虑到已知构建的MWDC2的尺寸为
+$\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定为
+\SI{2}{\milli\meter}，可以画出触发丝的示意图，如图\ref{fig:result:MWDC2}所示。
+
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=0.6\textwidth]{./resource/MWDC2-result.png}
+%	\caption{MWDC2的触发丝示意图。其中黑框为MWDC，紫色线为X丝，青色线为U丝}
+%	\label{fig:result:MWDC2}
+%\end{figure}
+
+粒子在MWDC3产生的事件更多：
+
+\begin{lstlisting}[firstnumber=4052,lastline=4060]
+ >> TrackID=2989 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.82537430623022mm kinectEnergy=0.0017753140284645MeV Time=18.838334119299ns
+ >> TrackID=2990 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.58646172968141mm kinectEnergy=0.010074419957495MeV Time=18.841695213327ns
+ >> TrackID=2991 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.84791551639636mm kinectEnergy=0.001373249129488MeV Time=18.844855089962ns
+ >> TrackID=3025 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.98140871087136mm kinectEnergy=0.0013782070403012MeV Time=19.064825348212ns
+ >> TrackID=3026 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.95746977018064mm kinectEnergy=0.0012234780977097MeV Time=19.064986983029ns
+ >> TrackID=3027 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.89706618755126mm kinectEnergy=0.0030624322736415MeV Time=19.065404939646ns
+ >> TrackID=3028 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.56193634694886mm kinectEnergy=0.0020104794779073MeV Time=19.069155255952ns
+ >> TrackID=3029 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.5618470987962mm kinectEnergy=0.0021834659212389MeV Time=19.069172009923ns
+ >> TrackID=3059 StepID=1 ZLayer:2 WireNumber:-327 Distance=0.87383127574681mm kinectEnergy=0.0014415503628428MeV Time=19.294719364388ns
+\end{lstlisting}
+
+这意味着粒子在X、U和V（编号为2）丝上各触发了一根丝，分别为编号-367、-324与-327。MWDC3
+设定的尺寸为$\SI{1582.9}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距仍为
+\SI{2}{\milli\meter}，可以画出如图\ref{fig:result:MWDC3}所示的示意图。
+
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=0.6\textwidth]{./resource/MWDC3-result.png}
+%	\caption{MWDC3的触发丝示意图。其中黑框为MWDC3的灵敏区，紫色线为X丝，绿色线为U丝，青色线为V丝}
+%	\label{fig:result:MWDC3}
+%\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[c]{0.4\linewidth}
+		\includegraphics[width=\textwidth]{./resource/MWDC2-result.png}
+		\subcaption{MWDC2}\label{fig:result:MWDC2}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.4\linewidth}
+		\includegraphics[width=\textwidth]{./resource/MWDC3-result.png}
+		\subcaption{MWDC3}\label{fig:result:MWDC3}
+	\end{subfigure}
+	\caption{MWDC的触发丝示意图。其中黑框为MWDC的灵敏区，紫色线为X丝，
+		绿色线为U丝，青色线为V丝。}
+	\label{fig:result:MWDC}
+\end{figure}
+
+\section{零度角量能}
+
+零度角量能器的每个Tower都可以给出其灵敏区得到的能量，并分别输出。没有记录到任何事件
+的Tower不会输出，以此优化输出的结果。例如，对于示例事件，共有12个Tower记录到了能量
+沉积（从而会有输出）；这些Tower在探测器内的位置大致如图\ref{fig:result:ZDC:Display}
+所示。
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./resource/ZDC-Display.png}
+	\caption{产生闪烁信号的ZDC Tower}\label{fig:result:ZDC:Display}
 \end{figure}
 
 % }}}
