@@ -622,6 +622,12 @@ CEE中所用到的多丝漂移室由六块MWDC组成，在束流通过的方向�
 可以看到，主径迹穿过\TZ、TPC后向X轴正方向（左侧）偏转，略过左侧的MWDC1、MWDC2、
 MWDC3和eTOF1，最终到达ZDC。
 
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./resource/EventDisplay.png}
+	\caption{模拟事件显示}\ref{fig:EventDisplay}
+\end{figure}
+
 \section{飞行时间测量}%%TODO:补充
 
 \section{径迹测量}
@@ -635,18 +641,24 @@ MWDC3和eTOF1，最终到达ZDC。
 记录单元计算了其最先记录到的感应信号的时间和飞到GEM膜被放大的次级电子的数目。
 例如，样例事件首先得到了以下的针对每个次级电子输出：
 
-\lstinputlisting[frame=single,firstline=2527,lastline=2537,numbers=left]
+\lstinputlisting[firstline=2527,lastline=2537]
 {./resource/EventExampleOut.txt}
 
 每行记录了一个在TPC内进入漂移的次级电子最后所在的位置和时间；其中，XZ方向（平行于
 记录板）的位置记录的是其漂移最终将产生信号的记录单元的编号。随后，本框架计算了每个
 记录单元应当产生信号的强度和时间，并产生以下输出：
 
-\lstinputlisting[frame=single,firstline=3322,lastline=3324,numbers=left]
+\lstinputlisting[firstline=3322,lastline=3324]
 {./resource/EventExampleOut.txt}
 
 其中记录了每个记录单元（其灵敏区被称作小室，Cell）所应当感应到的次级电子的数目和
-产生信号的时间。
+产生信号的时间。因此，本数据中TPC得到的输出结果可以表示为图\ref{fig:result:TPC}。
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./resource/TPC-result.png}
+	\caption{TPC的输出结果，方框内为事件显示}\label{fig:result:TPC}
+\end{figure}
 
 % }}}
 
