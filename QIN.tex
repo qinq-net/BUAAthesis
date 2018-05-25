@@ -375,7 +375,7 @@ Volume）。这一过程中，构建函数将会从纯文本格式的数据文�
 本框架内完成的几何构建有时间投影室探测器（TPC）、三种飞行时间探测器（TOF）、
 多丝漂移室（MWDC）和零度角量能器（ZDC）。以下是每种探测器的主要构建方式。
 
-\subsection{飞行时间探测器（TOF）}
+\subsection{飞行时间探测器（TOF）}\label{ssec:det:tof}
 
 本框架构建的飞行时间探测器主要有时间起始探测器（\TZ）、内部飞行时间探测器（iTOF）
 和外部飞行时间探测器（eTOF）。本框架的几何构建中将这三种飞行时间探测器视为只有
@@ -557,7 +557,23 @@ GEM膜而被放大和被探测到；
 
 \subsection{MRPC记录}\label{ssec:digi:MRPC}
 
+CEE中使用的飞行时间探测器由多层MRPC阵列组成，各测量单元交错布置，以最大限度减小死区。
+在第\ref{ssec:det:tof}节中已经提到，本框架分四层构建了这种基于MRPC的TOF探测器。
+用于数字化时，本框架以第三层的每个MRPC单位作为记录的单位。数字化过程中，本框架
+假设任何发生在灵敏区（不包括玻璃板这种非灵敏区）的有能量沉积的步骤都能够被MRPC
+的记录板探测到，并立即在记录板的对应位置产生一个能够以$v=\frac23c$速度（$c$为真空
+光速）向两端的读出电子学传输的信号。
 
+由于MRPC的子结构丰富，同时也由于本框架支持外部数据、而依照这种数据构建的MRPC结构
+有一定的不确定性，因此本记录器在记录过程中将数据以运行时查询到的各个MRPC单元的
+名称为键值存储在字典对象中，为每个MRPC单元存储了其几何信息，并分配了一个可变长度
+的列表，用于存储其中发生的所有有效步骤的时间和位置信息。
+
+本记录器会在任何步骤出现在MRPC灵敏区内时保存这一事件，取得其几何信息，并计算出
+两端读出的时间，追加到在字典对象中为这个MRPC单元提供的不定长列表中。
+随后，本记录器记录了每个MRPC每端读出时间的最小值，认为其为这一端实际
+收到信号的时间；连同（有可能由于用户设置数据而发生改变的）几何信息输出到预定的
+输出文件中。
 
 \subsection{MWDC记录}\label{ssec:digi:MWDC}
 
@@ -640,31 +656,27 @@ MWDC3和eTOF1，最终到达ZDC。
 粒子在TPC中会发生偏转，过程中产生的次级电子将会漂移到记录板下方的GEM膜而被感应到。
 本框架在输出过程中首先记录了每个次级粒子在TPC中进入漂移的位置和信息，随后为每个
 记录单元计算了其最先记录到的感应信号的时间和飞到GEM膜被放大的次级电子的数目。
-例如，样例事件首先得到了以下的针对每个次级电子输出：
+例如，样例事件首先可以得到类似以下的针对每个次级电子输出：（截取部分）
 
-\begin{lstlisting}[firstnumber=2527,lastline=2537]
- >> TrackID=994 CellXZ={0,-40} positionY=0.84114303933323mm Time=6.0892626981358ns
- >> TrackID=995 CellXZ={1,-40} positionY=1.0856891543324mm Time=6.1063259562462ns
- >> TrackID=996 CellXZ={0,-39} positionY=0.84593019536582mm Time=6.1126850323071ns
- >> TrackID=997 CellXZ={0,-38} positionY=0.84928351818984mm Time=6.1289823275534ns
- >> TrackID=998 CellXZ={0,-38} positionY=0.85008937871035mm Time=6.1327786700093ns
- >> TrackID=999 CellXZ={0,-38} positionY=-0.28073218386915mm Time=6.1733665062668ns
- >> TrackID=1000 CellXZ={0,-38} positionY=0.85137504059712mm Time=6.1389167634394ns
- >> TrackID=1001 CellXZ={1,-37} positionY=0.85273555675272mm Time=6.145267996147ns
- >> TrackID=1002 CellXZ={1,-37} positionY=-29.312180238961mm Time=6.7354566998437ns
- >> TrackID=1003 CellXZ={1,-36} positionY=0.85588526329872mm Time=6.1601625652366ns
- >> TrackID=1004 CellXZ={1,-34} positionY=-14.096524825403mm Time=7.5405283653648ns
+\begin{lstlisting}[firstnumber=2650,lastline=2657]
+ >> TrackID=995 CellXZ={1,-31} positionY=0.42669649210073mm Time=6.2609317299298ns
+ >> TrackID=996 CellXZ={0,-31} positionY=-1.2316577587387mm Time=6.3574588373838ns
+ >> TrackID=997 CellXZ={1,-31} positionY=0.29267780410593mm Time=6.2579124256321ns
+ >> TrackID=998 CellXZ={1,-31} positionY=0.29271473410068mm Time=6.2582254078705ns
+ >> TrackID=999 CellXZ={1,-30} positionY=0.29312751180922mm Time=6.2616937324113ns
+ >> TrackID=1000 CellXZ={1,-30} positionY=0.29456414464476mm Time=6.273846779001ns
+ >> TrackID=1001 CellXZ={0,-30} positionY=-48.618680814943mm Time=7.226464863741ns
+ >> TrackID=1002 CellXZ={1,-28} positionY=0.29686598769096mm Time=6.2947223883586ns
 \end{lstlisting}
 %{./resource/EventExampleOut.txt}
 
 每行记录了一个在TPC内进入漂移的次级电子最后所在的位置和时间；其中，XZ方向（平行于
 记录板）的位置记录的是其漂移最终将产生信号的记录单元的编号。随后，本框架计算了每个
-记录单元应当产生信号的强度和时间，并产生以下输出：
+记录单元应当产生信号的强度和时间，并产生类似下面的输出（截取部分）：
 
-\begin{lstlisting}[firstnumber=3322,lastline=3324]
- >>> Cell:{0,-39} ElectronCount=1 SignalTime=7989.194081125ns
- >>> Cell:{0,-38} ElectronCount=5 SignalTime=7989.1114159515ns
- >>> Cell:{0,-36} ElectronCount=4 SignalTime=7975.923419349ns
+\begin{lstlisting}[firstnumber=3384,lastline=3387]
+ >>> Cell:{1,-31} ElectronCount=7 SignalTime=7997.7270018879ns
+ >>> Cell:{1,-30} ElectronCount=2 SignalTime=8000.3825638861ns
 \end{lstlisting}
 
 其中记录了每个记录单元（其灵敏区被称作小室，Cell）所应当感应到的次级电子的数目和
@@ -681,24 +693,27 @@ MWDC3和eTOF1，最终到达ZDC。
 粒子经过MWDC时，可以在不同层的灵敏丝上产生不同的触发；利用各层丝上产生的触发，可以确定
 粒子在MWDC不同层上经过的位置，从而确定粒子的径迹。
 
-以示例数据为例，粒子扫过了MWDC1、MWDC2和MWDC3的边缘部分。其中，MWDC1没有有效的输出，
-这是因为粒子在MWDC1边缘扫过、没有直接通过灵敏丝的位置。MWDC2得到的数据较多：
+以示例数据为例，粒子扫过了MWDC1、MWDC2和MWDC3的边缘部分。其中，MWDC1的输出非常少：
 
-\begin{lstlisting}[firstnumber=3760,lastline=3768]
- >> TrackID=2441 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.79574191275058mm kinectEnergy=0.0013347791164896MeV Time=15.448136778109ns
- >> TrackID=2442 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.55299259180971mm kinectEnergy=0.00099998100030243MeV Time=15.449487217747ns
- >> TrackID=2443 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.17917100100296mm kinectEnergy=0.0076359880601445MeV Time=15.451757749434ns
- >> TrackID=2444 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.15478643574694mm kinectEnergy=0.0034406043691271MeV Time=15.452845531017ns
- >> TrackID=2488 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.22157933910984mm kinectEnergy=0.0010444254739243MeV Time=15.679155449858ns
- >> TrackID=2489 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.31380331751161mm kinectEnergy=0.0047784269276724MeV Time=15.679684315556ns
- >> TrackID=2490 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.36731948804126mm kinectEnergy=0.015550419137255MeV Time=15.679985953123ns 
- >> TrackID=8715 StepID=1 ZLayer:1 WireNumber:-253 Distance=0.32972618890013mm kinectEnergy=0.0012848935385169MeV Time=15.686946665181ns
- >> TrackID=8719 StepID=1 ZLayer:0 WireNumber:-286 Distance=0.11761704911904mm kinectEnergy=0.0016395460083186MeV Time=15.453562844286ns
+\begin{lstlisting}[firstnumber=3709,lastline=3710]
+ >> TrackID=1833 StepID=12 ZLayer:0 WireNumber:-98 Distance=0.29491490749932mm kinectEnergy=0.10643500624019MeV Time=12.696963509901ns
+ >> TrackID=9014 StepID=1 ZLayer:0 WireNumber:-98 Distance=0.29491490749932mm kinectEnergy=0.0039304610219273MeV Time=12.696963509901ns
 \end{lstlisting}
 
-这意味着粒子在X丝（编号为0）和U丝（编号为1）上分别触发了编号为-286和-253的丝（负编号
-意味着在x方向上位于中间丝的右侧，正编号意味着左侧）。考虑到已知构建的MWDC2的尺寸为
-$\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定为
+这意味着粒子在X丝上只触发了一根-98号丝；这样并不能用于获得有效的轨迹。
+而MWDC2得到的数据较多：
+
+\begin{lstlisting}[firstnumber=3760,lastline=3768]
+ >> TrackID=2217 StepID=27 ZLayer:0 WireNumber:-280 Distance=0.79975751948989mm kinectEnergy=0.14046723287468MeV Time=17.349570175722ns
+ >> TrackID=2537 StepID=1 ZLayer:0 WireNumber:-284 Distance=0.97771842475946mm kinectEnergy=0.0027493962453946MeV Time=15.453939879902ns
+ >> TrackID=2568 StepID=1 ZLayer:1 WireNumber:-251 Distance=0.71580328112503mm kinectEnergy=0.001265401440291MeV Time=15.673162361ns
+ >> TrackID=2569 StepID=1 ZLayer:1 WireNumber:-251 Distance=0.087115268746103mm kinectEnergy=0.0013009064838575MeV Time=15.677249124466ns
+ >> TrackID=8861 StepID=1 ZLayer:0 WireNumber:-280 Distance=0.79975751948989mm kinectEnergy=0.0021034125376979MeV Time=17.349570175722ns
+\end{lstlisting}
+
+这意味着粒子分别触发了在X丝（编号为0）上编号为-280、-284和U丝（编号为1）上-251的丝
+（负编号意味着在x方向上位于中间丝的右侧，正编号意味着左侧）。考虑到已知构建的MWDC2
+的尺寸为$\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定为
 \SI{2}{\milli\meter}，可以画出触发丝的示意图，如图\ref{fig:result:MWDC2}所示。
 
 %\begin{figure}
@@ -708,21 +723,34 @@ $\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定�
 %	\label{fig:result:MWDC2}
 %\end{figure}
 
-粒子在MWDC3产生的事件更多：
+%粒子在MWDC3产生的事件更多：
+%
+%\begin{lstlisting}[firstnumber=4052,lastline=4060]
+% >> TrackID=2989 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.82537430623022mm kinectEnergy=0.0017753140284645MeV Time=18.838334119299ns
+% >> TrackID=2990 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.58646172968141mm kinectEnergy=0.010074419957495MeV Time=18.841695213327ns
+% >> TrackID=2991 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.84791551639636mm kinectEnergy=0.001373249129488MeV Time=18.844855089962ns
+% >> TrackID=3025 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.98140871087136mm kinectEnergy=0.0013782070403012MeV Time=19.064825348212ns
+% >> TrackID=3026 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.95746977018064mm kinectEnergy=0.0012234780977097MeV Time=19.064986983029ns
+% >> TrackID=3027 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.89706618755126mm kinectEnergy=0.0030624322736415MeV Time=19.065404939646ns
+% >> TrackID=3028 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.56193634694886mm kinectEnergy=0.0020104794779073MeV Time=19.069155255952ns
+% >> TrackID=3029 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.5618470987962mm kinectEnergy=0.0021834659212389MeV Time=19.069172009923ns
+% >> TrackID=3059 StepID=1 ZLayer:2 WireNumber:-327 Distance=0.87383127574681mm kinectEnergy=0.0014415503628428MeV Time=19.294719364388ns
+%\end{lstlisting}
+%
+%这意味着粒子在X、U和V（编号为2）丝上各触发了一根丝，分别为编号-367、-324与-327。MWDC3
+%设定的尺寸为$\SI{1582.9}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距仍为
+%\SI{2}{\milli\meter}，可以画出如图\ref{fig:result:MWDC3}所示的示意图。
+粒子在MWDC3上触发的事件反而较少：
 
-\begin{lstlisting}[firstnumber=4052,lastline=4060]
- >> TrackID=2989 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.82537430623022mm kinectEnergy=0.0017753140284645MeV Time=18.838334119299ns
- >> TrackID=2990 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.58646172968141mm kinectEnergy=0.010074419957495MeV Time=18.841695213327ns
- >> TrackID=2991 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.84791551639636mm kinectEnergy=0.001373249129488MeV Time=18.844855089962ns
- >> TrackID=3025 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.98140871087136mm kinectEnergy=0.0013782070403012MeV Time=19.064825348212ns
- >> TrackID=3026 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.95746977018064mm kinectEnergy=0.0012234780977097MeV Time=19.064986983029ns
- >> TrackID=3027 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.89706618755126mm kinectEnergy=0.0030624322736415MeV Time=19.065404939646ns
- >> TrackID=3028 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.56193634694886mm kinectEnergy=0.0020104794779073MeV Time=19.069155255952ns
- >> TrackID=3029 StepID=1 ZLayer:1 WireNumber:-324 Distance=0.5618470987962mm kinectEnergy=0.0021834659212389MeV Time=19.069172009923ns
- >> TrackID=3059 StepID=1 ZLayer:2 WireNumber:-327 Distance=0.87383127574681mm kinectEnergy=0.0014415503628428MeV Time=19.294719364388ns
+\begin{lstlisting}[firstnumber=4213,lastline=4215]
+{
+ >> TrackID=3099 StepID=1 ZLayer:0 WireNumber:-365 Distance=0.84163380144656mm kinectEnergy=0.0010520273465741MeV Time=18.835926733374ns
+ >> TrackID=3100 StepID=1 ZLayer:0 WireNumber:-365 Distance=0.241168533277mm kinectEnergy=0.0017973460812635MeV Time=18.841395097067ns
+ >> TrackID=3135 StepID=1 ZLayer:1 WireNumber:-321 Distance=0.76864959392221mm kinectEnergy=0.0014821410169985MeV Time=19.0639128482ns
+}
 \end{lstlisting}
 
-这意味着粒子在X、U和V（编号为2）丝上各触发了一根丝，分别为编号-367、-324与-327。MWDC3
+这意味着粒子在X和U上各触发了一根丝，分别为编号-321和-365。MWDC3
 设定的尺寸为$\SI{1582.9}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距仍为
 \SI{2}{\milli\meter}，可以画出如图\ref{fig:result:MWDC3}所示的示意图。
 
@@ -735,11 +763,15 @@ $\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定�
 
 \begin{figure}
 	\centering
-	\begin{subfigure}[c]{0.4\linewidth}
+	\begin{subfigure}[c]{0.3\linewidth}
+		\includegraphics[width=\textwidth]{./resource/MWDC1-result.png}
+		\subcaption{MWDC1}\label{fig:result:MWDC1}
+	\end{subfigure}
+	\begin{subfigure}[c]{0.3\linewidth}
 		\includegraphics[width=\textwidth]{./resource/MWDC2-result.png}
 		\subcaption{MWDC2}\label{fig:result:MWDC2}
 	\end{subfigure}
-	\begin{subfigure}[c]{0.4\linewidth}
+	\begin{subfigure}[c]{0.3\linewidth}
 		\includegraphics[width=\textwidth]{./resource/MWDC3-result.png}
 		\subcaption{MWDC3}\label{fig:result:MWDC3}
 	\end{subfigure}
@@ -751,7 +783,7 @@ $\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定�
 \section{零度角量能}
 
 零度角量能器的每个Tower都可以给出其灵敏区得到的能量，并分别输出。没有记录到任何事件
-的Tower不会输出，以此优化输出的结果。例如，对于示例事件，共有12个Tower记录到了能量
+的Tower不会输出，以此优化输出的结果。例如，对于示例事件，共有6个Tower记录到了能量
 沉积（从而会有输出）；这些Tower在探测器内的位置大致如图\ref{fig:result:ZDC:Display}
 所示。
 
@@ -760,6 +792,37 @@ $\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定�
 	\includegraphics[width=0.7\textwidth]{./resource/ZDC-Display.png}
 	\caption{产生闪烁信号的ZDC Tower}\label{fig:result:ZDC:Display}
 \end{figure}
+
+\section{飞行时间测量}
+
+示例事件中实际上主粒子只经过了eTOF1，并在eTOF1中留下了触发信号。发生触发的MRPC
+得到了类似下面的输出。（size均为半长度）
+
+\begin{lstlisting}[firstnumber=4406,lastline=4453]
+ >>> MRPC: CEE_eTOF1_box_70_MRPC_70-1_phys
+   > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
+ >>> Time=23.232219654236ns ATime=27.729055198431ns BTime=28.726130467889ns
+ >>> MRPC: CEE_eTOF1_box_70_MRPC_70-2_phys
+   > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
+ >>> Time=23.159832890205ns ATime=27.622659457019ns BTime=28.703491862312ns
+ >>> MRPC: CEE_eTOF1_box_74_MRPC_74-2_phys
+   > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
+ >>> Time=21.38632894461ns ATime=26.39209786613ns BTime=26.387482879035ns
+ >>> MRPC: CEE_eTOF1_box_75_MRPC_75-1_phys
+   > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
+ >>> Time=21.389191097435ns ATime=26.299618590779ns BTime=26.485686460035ns
+ >>> MRPC: CEE_eTOF1_box_85_MRPC_85-1_phys
+   > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
+ >>> Time=21.277339016766ns ATime=26.240804097681ns BTime=26.320796791796ns
+\end{lstlisting}
+
+其中，ATime为信号到达上端的时间，BTime为信号到达下端的时间。利用已知的信号传播速度
+$v=\frac23c$（$c$为真空光速）和已知的Y方向尺寸，可以从两个信号时间计算出触发信号的
+实际时间。例如，对于编号为85-1的MRPC，实际时间可以计算为
+$\frac{t_{\text{ATime}}+t_{\text{BTime}}}{2}-\frac{d_{\text{sizeY}}}{v}
+	=\SI{21.28}{\nano\second}$（直接记录的值为\SI{21.278}{\nano\second}）
+实际实验中，这一时间还将受到电子学延迟等的影响，因此用于实验分析时需要使用标定好
+的时间信息。
 
 % }}}
 

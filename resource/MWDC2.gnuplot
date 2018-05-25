@@ -11,11 +11,13 @@ set ylabel 'Z [mm]'
 
 dW=2
 
-pX=-286
-pU=-253
+pX=-284
+pU=-251
+pX2=-280
 
 set arrow 5 from pX*dW,sizeY to pX*dW,-sizeY nohead linestyle 1
 set arrow 6 from pU*2/sqrt(3)*2+sizeY/sqrt(3),sizeY to pU*2/sqrt(3)*2-sizeY/sqrt(3),-sizeY nohead linestyle 2
 #set arrow 7 from pV*2/sqrt(3)*2-sizeY/sqrt(3),sizeY to pV*2/sqrt(3)*2+sizeY/sqrt(3),-sizeY nohead linestyle 3
+set arrow 55 from pX2*dW,sizeY to pX2*dW,-sizeY nohead linestyle 1
 
 plot 1/0 title ''
