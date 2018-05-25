@@ -313,9 +313,9 @@ CEE中采用的多丝漂移室系统由六块MWDC组成，分别配置在上述�
 
 \subsection{飞行时间探测器}
 
-CEE实验拟采用的飞行时间探测器均为多层MRPC阵列，主要包括磁场外部、束流线下游的
-端盖飞行时间探测器（eTOF），磁铁轭铁与TPC之间的内部飞行时间探测器（iTOF）和
-起始时间探测器（\TZ）。
+CEE实验拟采用的飞行时间探测器均为多气隙电阻板室（MRPC）阵列，主要包括磁场外部、
+束流线下游的端盖飞行时间探测器（eTOF），磁铁轭铁与TPC之间的内部飞行时间探测器
+（iTOF）和起始时间探测器（\TZ）。
 
 这些飞行时间探测器的本质均为多层MRPC阵列，可以抽象为对时间和位置灵敏的探测器，
 可以为每组输出起始时间和信号到达两端的时间差（反映一维位置信息）。
@@ -496,7 +496,7 @@ EndOfEventAction中调用了各个探测器的各个记录器的PrintAll函数�
 探测器模块的数字化实现。同时，在探测器内及探测器间的粒子径迹重建将会是本框架
 分析功能的主要难点和核心功能。
 
-\section{关键探测器的数字化实现}
+\section{关键探测器的数字化实现}\label{sec:digi}
 
 本框架基于对TPC、MRPC和MWDC三种探测器模块的原理分析，充分利用Geant4等框架提供
 的方法，实现了对这三种探测器的数字化。
@@ -763,9 +763,28 @@ $\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定�
 
 % }}}
 
-\chapter*{结论}
-
+\chapter*{结论}\addcontentsline{toc}{chapter}{结论}
 % {{{ 结论
+本工作中，基于HIRFL-CSR外靶实验（CEE）的设计方案，构建了基于Geant4的实验模拟框架，
+并基于现有的径迹重建方法和模拟得到的数据考虑了重建的方案，通过对模拟数据的分析评价
+了模拟框架的构建。其中，本框架的核心和创造性工作主要集中在于第\ref{sec:digi}节讨论
+的对时间投影室（TPC）、多丝漂移室（MWDC）和多气隙电阻板室（MRPC）的数字化方案与实现。
+
+本框架假定TPC对失去初始能量后进入匀速漂移的次级电子敏感，构建了针对次级电子的最后
+一个跟踪步骤的TPC记录器，并计算次级粒子的漂移时间，将记录的各电子数据归入TPC的
+各记录单元，得到了模拟事件中TPC记录板上各记录单元得到信号的强度和触发时间；假定
+MWDC对进入任何灵敏丝的灵敏范围的次级电子敏感，构建了针对次级电子第一个接触灵敏区
+的跟踪步骤的MWDC记录器，得到了MWDC上所触发丝的编号和漂移时间；假定MRPC对灵敏区内
+发生的任何产生能量沉积的事件敏感，记录了其触发的位置和时间，并计算得到了模拟事件中
+MRPC两端读出时两端各自的触发时间。本工作中构建的这三个记录器实现了对TPC、MWDC和
+MRPC的数字化，可以广泛地用于对与CEE采用构型相似的这三种探测器的模拟分析。
+
+本工作开展时间不长，在完成的工作范围内仍然存在若干需要进一步讨论的问题。例如，
+探测器的死时间问题尚未讨论，次级电子的复合等问题还未列入考虑范围，CEE中部分探测器
+（如\TZ）的设计方案有较大变动等。由于CEE是一个正在设计和准备过程中的实验，本工作
+在完成基本构建后仍将持续进行，针对CEE需要讨论的各种新问题对模拟框架进行持续改进，
+并针对CEE的分析要求继续构建更多的分析功能。
+
 % }}}
 
 % 致谢
@@ -776,6 +795,38 @@ $\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定�
 
 % 附录
 \appendix
+\chapter{源代码仓库}\label{chapter:repo}
+本工作中构建的模拟与分析框架的源代码仓库位于
+\url{https://github.com/qinq-net/CEE.git}。编译和安装本框架需要首先保证能够通过
+库搜索路径找到一个可用的、支持Qt及OpenGL功能的Geant4框架。本工作中在Linux系统中安装了
+CLHEP 2.3.3.1和Qt 4.8.7，打开了Geant4的Qt4、GDML和OpenGL支持，并关闭了多线程支持，
+亦即采用了以下参数配置Geant4的cmake：
+
+\begin{lstlisting}
+GEANT4_USE_SYSTEM_CLHEP=ON
+GEANT4_BUILD_MULTITHREADED=OFF
+GEANT4_USE_GDML=ON
+GEANT4_USE_OPENGL_X11=ON
+GEANT4_USE_QT=ON
+GEANT4_FORCE_QT4=ON
+\end{lstlisting}
+
+本框架主要实现的类如下所示。
+
+\begin{lstlisting}
+T1DetectorConstruction	# 探测器构建与灵敏探测器分配
+T1TPC			# TPC构建
+T1TPCDigi		# TPC的灵敏探测器
+CEEPSTPCScorer		# TPC的记录器
+T1MWDC 			# MWDC构建
+T1MWDCDigi		# MWDC的灵敏探测器
+CEEPSMWDCScorer		# MWDC的记录器
+T1T0			# \TZ构建
+T1iTOF 			# iTOF构建
+T1eTOF 			# eTOF构建
+T1MRPCDigi 		# TOF的MRPC灵敏探测器
+CEEPSMRPCScorer		# TOF的MRPC的记录器
+\end{lstlisting}
 %\include{data/appendix1-faq}
 %\include{data/appendix2-contactus}
 \end{document}
