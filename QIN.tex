@@ -616,7 +616,26 @@ CEE中所用到的多丝漂移室由六块MWDC组成，在束流通过的方向�
 数据时，可以替换这一模板，将数据录入到ROOT等分析框架的数据结构中。在本文第
 \ref{chap:例子}中会以一个模拟事件为例具体分析输出的结果。
 
-\section{径迹重建的基本原理}%%TODO：补充
+\section{径迹重建的基本原理}
+
+本框架的分析功能要求中，对粒子在各探测器，尤其是多丝正比室中的径迹的重建是一个
+核心要求。TPC可以利用记录单元和漂移时间确定粒子的径迹，但MWDC需要利用多层丝符合
+确定粒子穿过MWDC的位置。本节中将介绍本工作中分析模拟数据时考虑MWDC径迹重建问题的
+方法。
+
+本工作目前分析的主要为模拟数据，模拟过程中每个入射粒子产生的事件都是独立的，因此
+本工作分析的过程中无需考虑不同入射粒子产生的假符合。对于每块MWDC探测器，可以有
+以下情况：
+\begin{enumerate}
+	\item 如果其三层丝中只有一层触发，则无法判断粒子在XY方向的入射位置。
+	\item 如果有两层触发，且每一层都只有一根丝，那么其交点可以近似视为入射点。
+		如果有灵敏层有不止一根丝，那么可以取其平均位置视为触发的丝，寻找交点。
+	\item 如果有三层触发，且每层触发的丝构成的等腰三角形较小（例如内部不存在
+		任何其他的灵敏丝），那么可以将其重心视为入射点。
+\end{enumerate}
+
+如果同侧的三块MWDC探测器中有至少两块能找出有效的入射点，那么可以利用这些探测器
+得到的入射点连成直线，以确定粒子的运动方向。
 
 % }}}
 
@@ -654,25 +673,13 @@ MWDC3和eTOF1，最终到达ZDC。
 粒子在TPC中会发生偏转，过程中产生的次级电子将会漂移到记录板下方的GEM膜而被感应到。
 本框架在输出过程中首先记录了每个次级粒子在TPC中进入漂移的位置和信息，随后为每个
 记录单元计算了其最先记录到的感应信号的时间和飞到GEM膜被放大的次级电子的数目。
-例如，样例事件首先可以得到类似以下的针对每个次级电子输出：（截取部分）
+例如，样例事件首先可以得到类似附录\ref{chapter:data}中代码\ref{data:TPC:Track}
+的针对每个次级电子输出。
 
-\begin{lstlisting}[firstnumber=2650,lastline=2657]
- >> TrackID=995 CellXZ={1,-31} positionY=0.42669649210073mm Time=6.2609317299298ns
- >> TrackID=996 CellXZ={0,-31} positionY=-1.2316577587387mm Time=6.3574588373838ns
- >> TrackID=997 CellXZ={1,-31} positionY=0.29267780410593mm Time=6.2579124256321ns
- >> TrackID=998 CellXZ={1,-31} positionY=0.29271473410068mm Time=6.2582254078705ns
- >> TrackID=999 CellXZ={1,-30} positionY=0.29312751180922mm Time=6.2616937324113ns
- >> TrackID=1000 CellXZ={1,-30} positionY=0.29456414464476mm Time=6.273846779001ns
- >> TrackID=1001 CellXZ={0,-30} positionY=-48.618680814943mm Time=7.226464863741ns
- >> TrackID=1002 CellXZ={1,-28} positionY=0.29686598769096mm Time=6.2947223883586ns
-\end{lstlisting}
-%{./resource/EventExampleOut.txt}
-
-每行记录了一个在TPC内进入漂移的次级电子最后所在的位置和时间；其中，XZ方向（平行于
-记录板）的位置记录的是其漂移最终将产生信号的记录单元的编号。随后，本框架计算了每个
+随后，本框架计算了每个
 记录单元应当产生信号的强度和时间，并产生类似下面的输出（截取部分）：
 
-\begin{lstlisting}[firstnumber=3384,lastline=3387]
+\begin{lstlisting}[caption={TPC Cells},firstnumber=3384,lastline=3387]
  >>> Cell:{1,-31} ElectronCount=7 SignalTime=7997.7270018879ns
  >>> Cell:{1,-30} ElectronCount=2 SignalTime=8000.3825638861ns
 \end{lstlisting}
@@ -693,7 +700,7 @@ MWDC3和eTOF1，最终到达ZDC。
 
 以示例数据为例，粒子扫过了MWDC1、MWDC2和MWDC3的边缘部分。其中，MWDC1的输出非常少：
 
-\begin{lstlisting}[firstnumber=3709,lastline=3710]
+\begin{lstlisting}[caption={MWDC1},firstnumber=3709,lastline=3710]
  >> TrackID=1833 StepID=12 ZLayer:0 WireNumber:-98 Distance=0.29491490749932mm kinectEnergy=0.10643500624019MeV Time=12.696963509901ns
  >> TrackID=9014 StepID=1 ZLayer:0 WireNumber:-98 Distance=0.29491490749932mm kinectEnergy=0.0039304610219273MeV Time=12.696963509901ns
 \end{lstlisting}
@@ -701,7 +708,7 @@ MWDC3和eTOF1，最终到达ZDC。
 这意味着粒子在X丝上只触发了一根-98号丝；这样并不能用于获得有效的轨迹。
 而MWDC2得到的数据较多：
 
-\begin{lstlisting}[firstnumber=3760,lastline=3768]
+\begin{lstlisting}[caption={MWDC2},firstnumber=3760,lastline=3768]
  >> TrackID=2217 StepID=27 ZLayer:0 WireNumber:-280 Distance=0.79975751948989mm kinectEnergy=0.14046723287468MeV Time=17.349570175722ns
  >> TrackID=2537 StepID=1 ZLayer:0 WireNumber:-284 Distance=0.97771842475946mm kinectEnergy=0.0027493962453946MeV Time=15.453939879902ns
  >> TrackID=2568 StepID=1 ZLayer:1 WireNumber:-251 Distance=0.71580328112503mm kinectEnergy=0.001265401440291MeV Time=15.673162361ns
@@ -714,16 +721,9 @@ MWDC3和eTOF1，最终到达ZDC。
 的尺寸为$\SI{1171.4}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距设定为
 \SI{2}{\milli\meter}，可以画出触发丝的示意图，如图\ref{fig:result:MWDC2}所示。
 
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=0.6\textwidth]{./resource/MWDC2-result.png}
-%	\caption{MWDC2的触发丝示意图。其中黑框为MWDC，紫色线为X丝，青色线为U丝}
-%	\label{fig:result:MWDC2}
-%\end{figure}
-
 %粒子在MWDC3产生的事件更多：
 %
-%\begin{lstlisting}[firstnumber=4052,lastline=4060]
+%\begin{lstlisting}[caption={MWDC3},firstnumber=4052,lastline=4060]
 % >> TrackID=2989 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.82537430623022mm kinectEnergy=0.0017753140284645MeV Time=18.838334119299ns
 % >> TrackID=2990 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.58646172968141mm kinectEnergy=0.010074419957495MeV Time=18.841695213327ns
 % >> TrackID=2991 StepID=1 ZLayer:0 WireNumber:-367 Distance=0.84791551639636mm kinectEnergy=0.001373249129488MeV Time=18.844855089962ns
@@ -740,7 +740,7 @@ MWDC3和eTOF1，最终到达ZDC。
 %\SI{2}{\milli\meter}，可以画出如图\ref{fig:result:MWDC3}所示的示意图。
 粒子在MWDC3上触发的事件反而较少：
 
-\begin{lstlisting}[firstnumber=4213,lastline=4215]
+\begin{lstlisting}[caption={MWDC3},firstnumber=4213,lastline=4215]
 {
  >> TrackID=3099 StepID=1 ZLayer:0 WireNumber:-365 Distance=0.84163380144656mm kinectEnergy=0.0010520273465741MeV Time=18.835926733374ns
  >> TrackID=3100 StepID=1 ZLayer:0 WireNumber:-365 Distance=0.241168533277mm kinectEnergy=0.0017973460812635MeV Time=18.841395097067ns
@@ -751,13 +751,6 @@ MWDC3和eTOF1，最终到达ZDC。
 这意味着粒子在X和U上各触发了一根丝，分别为编号-321和-365。MWDC3
 设定的尺寸为$\SI{1582.9}{\milli\meter}\times\SI{999.8}{\milli\meter}$，而丝间距仍为
 \SI{2}{\milli\meter}，可以画出如图\ref{fig:result:MWDC3}所示的示意图。
-
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=0.6\textwidth]{./resource/MWDC3-result.png}
-%	\caption{MWDC3的触发丝示意图。其中黑框为MWDC3的灵敏区，紫色线为X丝，绿色线为U丝，青色线为V丝}
-%	\label{fig:result:MWDC3}
-%\end{figure}
 
 \begin{figure}
 	\centering
@@ -796,7 +789,7 @@ MWDC3和eTOF1，最终到达ZDC。
 示例事件中实际上主粒子只经过了eTOF1，并在eTOF1中留下了触发信号。发生触发的MRPC
 得到了类似下面的输出。（size均为半长度）
 
-\begin{lstlisting}[firstnumber=4406,lastline=4453]
+\begin{lstlisting}[caption={eTOF1},firstnumber=4406,lastline=4453]
  >>> MRPC: CEE_eTOF1_box_70_MRPC_70-1_phys
    > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
  >>> Time=23.232219654236ns ATime=27.729055198431ns BTime=28.726130467889ns
@@ -817,7 +810,7 @@ MWDC3和eTOF1，最终到达ZDC。
 其中，ATime为信号到达上端的时间，BTime为信号到达下端的时间。利用已知的信号传播速度
 $v=\frac23c$（$c$为真空光速）和已知的Y方向尺寸，可以从两个信号时间计算出触发信号的
 实际时间。例如，对于编号为85-1的MRPC，实际时间可以计算为
-$\frac{t_{\text{ATime}}+t_{\text{BTime}}}{2}-\frac{d_{\text{sizeY}}}{v}
+$\frac{t_{\text{ATime}}+t_{\text{BTime}} }{2}-\frac{d_{\text{sizeY}} }{v}
 	=\SI{21.28}{\nano\second}$（直接记录的值为\SI{21.278}{\nano\second}）
 实际实验中，这一时间还将受到电子学延迟等的影响，因此用于实验分析时需要使用标定好
 的时间信息。
@@ -857,13 +850,14 @@ MRPC的数字化，可以广泛地用于对与CEE采用构型相似的这三种�
 % 附录
 \appendix
 \chapter{源代码仓库}\label{chapter:repo}
+% {{{ 源代码仓库
 本工作中构建的模拟与分析框架的源代码仓库位于
 \url{https://github.com/qinq-net/CEE.git}。编译和安装本框架需要首先保证能够通过
 库搜索路径找到一个可用的、支持Qt及OpenGL功能的Geant4框架。本工作中在Linux系统中安装了
 CLHEP 2.3.3.1和Qt 4.8.7，打开了Geant4的Qt4、GDML和OpenGL支持，并关闭了多线程支持，
 亦即采用了以下参数配置Geant4的cmake：
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Geant4 编译选项}]
 GEANT4_USE_SYSTEM_CLHEP=ON
 GEANT4_BUILD_MULTITHREADED=OFF
 GEANT4_USE_GDML=ON
@@ -874,7 +868,7 @@ GEANT4_FORCE_QT4=ON
 
 本框架主要实现的类如下所示。
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={主要实现的类}]
 T1DetectorConstruction	# 探测器构建与灵敏探测器分配
 T1TPC			# TPC构建
 T1TPCDigi		# TPC的灵敏探测器
@@ -888,6 +882,33 @@ T1eTOF 			# eTOF构建
 T1MRPCDigi 		# TOF的MRPC灵敏探测器
 CEEPSMRPCScorer		# TOF的MRPC的记录器
 \end{lstlisting}
+% }}}
+
+\chapter{示例数据}\label{chapter:data}
+
+示例数据可以在
+{\do{\/}\do{-}
+\url{https://github.com/qinq-net/BUAAthesis/blob/QIN/resource/EventExampleOut.txt}
+}
+找到。以下是部分在文中提及的较长数据。
+
+\section{TPC Tracks}\label{sec:data:TPC:Track}
+
+以下是TPC记录的跟踪数据的截取部分的样例。其中每行记录了一个在TPC内进入漂移的次级电子
+最后所在的位置和时间；XZ方向（平行于记录板）的位置记录的是其漂移最终将产生信号的
+记录单元的编号。
+\begin{lstlisting}[caption={TPC Tracks},label={data:TPC:Track},firstnumber=2650,lastline=2657]
+ >> TrackID=995 CellXZ={1,-31} positionY=0.42669649210073mm Time=6.2609317299298ns
+ >> TrackID=996 CellXZ={0,-31} positionY=-1.2316577587387mm Time=6.3574588373838ns
+ >> TrackID=997 CellXZ={1,-31} positionY=0.29267780410593mm Time=6.2579124256321ns
+ >> TrackID=998 CellXZ={1,-31} positionY=0.29271473410068mm Time=6.2582254078705ns
+ >> TrackID=999 CellXZ={1,-30} positionY=0.29312751180922mm Time=6.2616937324113ns
+ >> TrackID=1000 CellXZ={1,-30} positionY=0.29456414464476mm Time=6.273846779001ns
+ >> TrackID=1001 CellXZ={0,-30} positionY=-48.618680814943mm Time=7.226464863741ns
+ >> TrackID=1002 CellXZ={1,-28} positionY=0.29686598769096mm Time=6.2947223883586ns
+\end{lstlisting}
+%{./resource/EventExampleOut.txt}
+
 %\include{data/appendix1-faq}
 %\include{data/appendix2-contactus}
 \end{document}

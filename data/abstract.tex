@@ -5,6 +5,14 @@
 本篇文章主要介绍一套用于HIRFL-CSR外靶实验（CEE）模拟与分析的软件框架。本文首先介绍
 了CEE实验的概况和主要涉及的探测器原理与布置，之后介绍了本软件框架的基本原理、主要
 结构与关键技术难点的实现方法，最后给出了探测器模拟的一组结果和分析方法。
+
+为解决对CEE实验进行模拟和未来的数据分析的问题，本工作主要在Geant4框架中构建了CEE实验
+的探测器系统（低温高密核物质测量谱仪）、实现了主要探测器的数字化功能，并讨论了
+径迹重建等数据分析问题。其中，本文介绍了对CEE采用的时间投影室探测器（TPC）、基于
+多气隙电阻板室（MRPC）的飞行时间探测器（TOF）、多丝漂移室（MWDC）和零度角量能器
+（ZDC）等探测器的几何构建，详细讨论了其中TPC、MRPC和MWDC的数字化实现，并分析了
+示例性的模拟数据。
+
 \end{cabstract}
 
 \begin{eabstract}
@@ -13,4 +21,15 @@ Experiment (CEE) is built and introduced. Goals and detectors of CEE experiment 
 reviewed as an introduction. Basic principles, main structure and implementations
 for certain technological problems are introduced. A group of simulation results and
 routes of analyzation are given as a conclusion.
+
+To match the requirements of simulation and analyzation of future CEE experiments,
+CEE detector system (low tempetrature high density nuclear matter chamber) is
+constructed in Geant4, as well as implementations of digitization of major detectors.
+Analyzation problems such as track reconstruction is also discussed. 
+
+Geometry construction for CEE adopted detectors, including Time Projection Chamber
+(TPC), Time of Flight (TOF) detectors based on Multi-gap Resistive Plate Chamber
+(MRPC), Multi-Wire Drift Chamber (MWDC) and Zero Degree Chamber (ZDC).
+Implementations of digitization of TPC, MRPC and MWDC are detailedly discussed.
+An example simulation output is also analyzed.
 \end{eabstract}
