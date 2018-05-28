@@ -1,0 +1,51 @@
+%---------------------------------------------------------------------------%
+%-                                                                         -%
+%-                           LaTeX Template                                -%
+%-                                                                         -%
+%---------------------------------------------------------------------------%
+%- Copyright (C) Huangrui Mo <huangrui.mo@gmail.com> 
+%- This is free software: you can redistribute it and/or modify it
+%- under the terms of the GNU General Public License as published by
+%- the Free Software Foundation, either version 3 of the License, or
+%- (at your option) any later version.
+%---------------------------------------------------------------------------%
+%->> Document class declaration
+%---------------------------------------------------------------------------%
+\documentclass[UTF8]{utbook}%
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{ctex}
+%- [fontset=<fandol|...>]% specify font set to replace automatic detection
+%---------------------------------------------------------------------------%
+%->> Load package
+%---------------------------------------------------------------------------%
+%\usepackage[paper=a4paper,margin=3cm]{geometry}% page layout
+\usepackage[paper=a4paper]{geometry}
+%---------------------------------------------------------------------------%
+%->> Define command
+%---------------------------------------------------------------------------%
+\renewcommand{\title}[1]{\def\spinetitle{#1}}% title command
+\renewcommand{\author}[1]{\def\spineauthor{#1}}% author command
+\newcommand{\institute}[1]{\def\spineinst{#1}}% institute command
+\newcommand{\makespine}{% command for making spine
+    \newpage\thispagestyle{empty}% no header and footer
+    %\heiti\zihao{-4}\centering% font property
+    \vspace*{\fill}\hspace*{\fill}
+    \fbox{\parbox[c][1cm][c]{1.4\textwidth}{
+        \hspace*{0.2cm}
+        {\zihao{4}\spinetitle\hfill\spineauthor}
+	{\zihao{-4}\hfill\spineinst}% structure
+        \hspace*{0.2cm}
+    }}
+    \vspace*{\fill}\hspace*{\fill}
+}%
+%---------------------------------------------------------------------------%
+%->> Spine content
+%---------------------------------------------------------------------------%
+\begin{document}
+\title{HIRFL-CSR外靶实验终端模拟和分析框架的构建}
+\author{秦~~~雨~~~浩}
+\institute{北~京~航~空~航~天~大~学}
+\makespine
+\end{document}
+%---------------------------------------------------------------------------%
+% vim: ts=4 sw=4 et ft=tex :

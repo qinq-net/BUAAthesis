@@ -3,7 +3,9 @@ qin:
 	-biber QIN
 	xelatex QIN.tex
 	xelatex QIN.tex
-all: qin
+qin-spine:
+	uplatex QIN-spine.tex && dvipdfmx QIN-spine.dvi
+all: qin qin-spine
 bachelor:
 	xelatex sample-bachelor.tex
 	-bibtex  sample-bachelor.aux
@@ -18,4 +20,4 @@ clean:
 	find . -name '*.aux' -print0 | xargs -0 rm -rf
 	rm -rf *.lof *.log *.lot *.out *.toc *.bbl *.blg *.thm *.bcf *.run.xml
 depclean: clean
-	rm -rf *.pdf
+	rm -rf *.pdf *.dvi
