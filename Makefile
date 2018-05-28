@@ -16,6 +16,6 @@ master:
 	xelatex sample-master.tex
 clean:
 	find . -name '*.aux' -print0 | xargs -0 rm -rf
-	rm -rf *.lof *.log *.lot *.out *.toc *.bbl *.blg *.thm *.bcf
+	rm -rf *.lof *.log *.lot *.out *.toc *.bbl *.blg *.thm *.bcf *.run.xml
 depclean: clean
 	rm -rf *.pdf
