@@ -784,9 +784,13 @@ CEE中使用的飞行时间探测器由多层MRPC阵列组成，各测量单元�
 单线程运行模式，并启用Geant4提供的Qt 4界面和OpenGL支持；运行时将Geant4 OpenGL的
 允许显示单元数增加到1000000，以显示所需的大量探测器单元与束流径迹。
 
+除ZDC之外的数据均是在同一次模拟事件中得到的，这次事件中ZDC的材料还未设置。ZDC
+的数据是单独一次新模拟事件的结果。以下除ZDC外数据所采用的事件被称作“示例事件”，
+ZDC所用的事件被称作“ZDC模拟事件”。
+
 \section{事件显示}
 
-样例模拟事件在本框架中可以利用模拟数据立即得到如图\ref{fig:EventDisplay}的显示。
+示例事件在本框架中可以利用模拟数据立即得到如图\ref{fig:EventDisplay}的显示。
 可以看到，主径迹穿过\TZ、TPC后向X轴正方向（左侧）偏转，掠过左侧的MWDC1、MWDC2、
 MWDC3和eTOF1，最终到达ZDC。
 
@@ -805,7 +809,7 @@ MWDC3和eTOF1，最终到达ZDC。
 粒子在TPC中会发生偏转，过程中产生的次级电子将会漂移到记录板下方的GEM膜而被感应到。
 本框架在输出过程中首先记录了每个次级粒子在TPC中进入漂移的位置和信息，随后为每个
 记录单元计算了其最先记录到的感应信号的时间和飞到GEM膜被放大的次级电子的数目。
-例如，样例事件首先可以得到类似附录\ref{chap:data}中代码\ref{data:TPC:Track}
+例如，示例事件首先可以得到类似附录\ref{chap:data}中代码\ref{data:TPC:Track}
 的针对每个次级电子输出。
 
 随后，本框架计算了每个
@@ -938,14 +942,32 @@ E &	=\sqrt{p^2c^2+m^2c^4}-mc^2\\
 \section{零度角量能}
 
 零度角量能器的每个Tower都可以给出其灵敏区得到的能量，并分别输出。没有记录到任何事件
-的Tower不会输出，以此优化输出的结果。例如，对于示例事件，共有6个Tower记录到了能量
-沉积（从而会有输出）；这些Tower在探测器内的位置大致如图\ref{fig:result:ZDC:Display}
-所示。
-
+的Tower不会输出，以此优化输出的结果。例如，对于ZDC模拟事件，粒子直接打在了编号为
+76-1的Tower上而被吸收，输出结果大致如代码\ref{data:ZDC}所示。
+\begin{lstlisting}[caption={ZDC输出},label={data:ZDC},firstnumber=3893,lastline=3896]
+ MultiFunctionalDet  CEE_ZDC_Tower_76-1_det
+ PrimitiveScorer energyDeposit
+ Number of entries 1
+  copy no.: 0  energy deposit: 1552.1291707562 [MeV]
+\end{lstlisting}
+离子在进入ZDC前行进的距离约为\SI{4}{\meter}，利用LISE++计算得到能量损失只有大约
+\SI{60}{\mega\eV}，远远小于初始能量$\SI{250}{\mega\eV/u}\cdot\SI{12}{u}=
+\SI{3e3}{\mega\eV}$。考虑到ZDC构建中铅层的厚度大约四倍于闪烁体，认为这一大达
+\SI{1.5e3}{\mega\eV}的能量损失
+应当是来自于不灵敏的铅层和不锈钢外壳。粒子进入ZDC的状态如图
+\ref{fig:result:ZDC:Display}所示。
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\textwidth]{./resource/ZDC-Display.png}
-	\caption{产生闪烁信号的ZDC Tower}\label{fig:result:ZDC:Display}
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{./resource/ZDC-Display.png}
+		\subcaption{带电离子进入ZDC}\label{fig:result:ZDC:Display}
+	\end{subfigure}
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{./resource/ZDC-Tower.png}
+		\subcaption{发生信号的ZDC Tower}\label{fig:result:ZDC:Tower}
+	\end{subfigure}
+	\caption{ZDC模拟事件示意图}
+	\label{fig:result:ZDC}
 \end{figure}
 
 \section{飞行时间测量}
@@ -1073,7 +1095,11 @@ CEEPSMRPCScorer		# TOF的MRPC的记录器
 {\do{\/}\do{-}
 \url{https://github.com/qinq-net/BUAAthesis/blob/QIN/resource/EventExampleOut.txt}
 }
-找到。以下是部分在文中提及的较长数据。
+找到，ZDC模拟事件数据可以在
+{\do{\/}\do{-}
+\url{https://github.com/qinq-net/BUAAthesis/blob/QIN/resource/EventZDCOut.txt}
+}
+以下是部分在文中提及的较长数据。
 
 \section{TPC Tracks}\label{sec:data:TPC:Track}
 
