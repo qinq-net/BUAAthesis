@@ -893,11 +893,9 @@ E=\sqrt{p^2c^2+m^2c^4}-mc^2=\sqrt{(\SI{8.244e3}{\mega\eV})^2+
 粒子在MWDC3上触发的事件反而较少：
 
 \begin{lstlisting}[caption={MWDC3},firstnumber=4213,lastline=4215]
-{
  >> TrackID=3099 StepID=1 ZLayer:0 WireNumber:-365 Distance=0.84163380144656mm kinectEnergy=0.0010520273465741MeV Time=18.835926733374ns
  >> TrackID=3100 StepID=1 ZLayer:0 WireNumber:-365 Distance=0.241168533277mm kinectEnergy=0.0017973460812635MeV Time=18.841395097067ns
  >> TrackID=3135 StepID=1 ZLayer:1 WireNumber:-321 Distance=0.76864959392221mm kinectEnergy=0.0014821410169985MeV Time=19.0639128482ns
-}
 \end{lstlisting}
 
 这意味着粒子在X和U上各触发了一根丝，分别为编号-321和-365。MWDC3
@@ -982,9 +980,10 @@ $v=\frac23c$（$c$为真空光速）和已知的Y方向尺寸，可以从两个�
 也可以由这两个时间计算触发信号的位置：两端时间差相当于2倍于Y方向坐标值除以速度，
 于是有
 \begin{equation}
-\frac{t_{\text{ATime}}-t_{\text{BTime}} }{2}=-2\frac{y}{v}=\SI{-0.08}{\nano\second}
+\frac{t_{\text{ATime}}-t_{\text{BTime}} }{2}=-\frac{y}{v}=\SI{-0.08}{\nano\second}
 \end{equation}
 得到$y=\SI{8}{\milli\meter}$。事实上，85-1模拟测量的详细数据如代码\ref{data:MRPC:85-1}
+可以看到，Y方向坐标确实在\SI{8}{\milli\meter}左右：
 \begin{lstlisting}[caption={eTOF1-MRPC-85-1},label={data:MRPC:85-1},firstnumber=4449,lastline=4453]
  >>> MRPC: CEE_eTOF1_box_85_MRPC_85-1_phys
    > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
@@ -992,7 +991,6 @@ $v=\frac23c$（$c$为真空光速）和已知的Y方向尺寸，可以从两个�
  >>>> tID=3516 sID=4 pX=-2.154416372819mm pY=7.9937354635887mm pZ=-2.25mm Time=21.277339016766ns ATime=26.240804097681ns BTime=26.320796791796ns
  >>>> tID=3516 sID=6 pX=-2.6107045517469mm pY=8.3243743706931mm pZ=-1.5499999999997mm Time=21.281163615032ns ATime=26.242974356929ns BTime=26.32627572908ns
 \end{lstlisting}
-可以看到，Y方向坐标确实在\SI{8}{\milli\meter}左右。
 
 实际实验中，这一时间还将受到电子学延迟等的影响，因此用于实验分析时需要使用标定好
 的时间信息。目前本框架的模拟忽略了这些因素的影响。
