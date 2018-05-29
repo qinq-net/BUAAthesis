@@ -24,7 +24,7 @@
 	\PassOptionsToPackage{hyphens}{url}
 \usepackage{cleveref}
 \usepackage{etoolbox}%for \ifcsdef
-\usepackage{siunitx}%for units
+\usepackage[separate-uncertainty=true]{siunitx}%for units
 	\DeclareSIUnit\year{a}
 	\DeclareSIUnit\gauss{Gs}
 \usepackage{subcaption}
@@ -151,11 +151,12 @@
 
 本研究所称的“HIRFL-CSR外靶实验”，指的是利用中科院近代物理研究所的重离子加速器提供的
 束流进行重离子碰撞外靶实验（CSR External-target Experiment，CEE）。
+\cite{Lyu:ConceptDesign}
 
 该实验已经立项搭建低温高密核物质测量谱仪。该谱仪的测量手段为，利用大接收度的超导磁铁
 ，通过时间投影室、硅像素、高计数率飞行时间谱仪等多种国内首次采用的先进探测器，配合先
 进的电子学技术，实现对中能重离子碰撞产物的全空间探测和鉴别。本研究的主要内容就是基于
-CEE的设计构建软件层面的终端模拟和分析框架。
+CEE的设计构建软件层面的终端模拟和分析框架。\cite{Lyu:ConceptDesign}
 
 该实验将构建低温高密核物质测量谱仪，通过相对论重离子碰撞实验实现QCD相变。国际上已经
 有多个类似的重离子碰撞实验，但基本运行在高能区。
@@ -245,7 +246,7 @@ CSR外靶实验（CEE）的探测器系统被称作“低温高密核物质测�
 HIRFL-CSR的大型核物理实验装置。其主要的科学功能是实现该能区的重离子碰撞中带电粒子
 产物的近全空间测量，为致密天体性质、核反应动力学、自旋和同位旋相关的核力与
 核物质状态方程性质、高重子数密度QCD相图等重要的科学问题研究提供基础实验数据。
-\cite{技术文档,Lyu:ConceptDesign}
+\cite{Lyu:ConceptDesign}
 
 \section{主要子系统}
 
@@ -262,12 +263,12 @@ $\SI{1}{\meter}\times\SI{0.9}{\meter}\times\SI{1.2}{\meter}$（长、高、宽�
 探测到的重建径迹得到粒子的动量。最简单的情况是对非相对论粒子（如重离子），忽略粒子
 穿过探测器通过电离等形式发生的能量损失、忽略竖直方向电场等作用的情况，并假定磁场
 方向与运动平面垂直时，可以认为其所受的洛伦兹力$\bm{F}$提供偏转向心力：
-\begin{equation}\label{eq:B}
+\begin{equation}\label{eq:TPC:magnetic}
 \bm{F} = -\frac{mv^2}{R}\hat{\bm{n}} = q\bm{v}\times\bm{B}
 \end{equation}
 其中$m$为粒子质量，$\bm{v}$为速度，$R$为偏转半径，$\hat{\bm{n}}$为径向单位矢量，
 $\bm{B}$为磁场的磁感应强度；于是有
-\begin{equation}
+\begin{equation}\label{eq:TPC:momentum}
 p = q B R
 \end{equation}
 其中$p$为粒子动量大小。因此，在重建得到半径的情况下，可以确定已知电荷量粒子的动量。
@@ -287,7 +288,7 @@ TPC）的，因此其可以被简化为覆盖一个包覆了TPC探测器的固�
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{./resource/CEE-Pix.png}
-	\caption{微像素定位探测器的原理示意图}
+	\caption{微像素定位探测器的原理示意图\cite{技术文档}}
 	\label{fig:det:Pix}
 \end{figure}
 
@@ -360,7 +361,7 @@ CEE中采用的多丝漂移室系统由六块MWDC组成，分别配置在上述�
 	\centering
 	\begin{subfigure}{0.4\textwidth}
 		\includegraphics[width=\textwidth]{./resource/CEE-MWDC-Layer.jpg}
-		\subcaption{MWDC的阳极丝几何角度示意图\cite{技术文档}}
+		\subcaption{MWDC的阳极丝几何角度示意图}
 		\label{fig:det:MWDC:Layer}
 	\end{subfigure}
 	\begin{subfigure}{0.4\textwidth}
@@ -368,7 +369,7 @@ CEE中采用的多丝漂移室系统由六块MWDC组成，分别配置在上述�
 		\subcaption{MWDC的结构，未按比例，每层均旋转到X层的方向\cite{Yi:MWDC}}
 		\label{fig:det:MWDC:Layout}
 	\end{subfigure}
-	\caption{MWDC的结构示意图}\label{fig:det:MWDC}
+	\caption{MWDC的结构示意图\cite{技术文档}}\label{fig:det:MWDC}
 \end{figure}
 
 这一MWDC系统可以抽象为一个空间灵敏探测器，每块探测器可以分为三层，在每层能够记录
@@ -426,20 +427,21 @@ ZDC位于探测器系统的最后，可以接收到受磁场偏转影响较小�
 为铅和闪烁体夹层，可以读出事件沉积的总能量。
 
 CEE采用的ZDC的基本结构为65层铅与65层闪烁体交叉放置的量能器，面向入射粒子流角度
-方向。其测量出的总能量被用于做中心快度关联函数测量等。CEE采用的ZDC的设置图如
-图\ref{fig:det:ZDC}所示。
+方向。其测量出的总能量被用于做中心快度关联函数测量等。\cite{Lyu:ConceptDesign}
+CEE采用的ZDC的设置图如图\ref{fig:det:ZDC}所示。
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\textwidth]{./resource/CEE-ZDC.png}
-	\caption{CEE的ZDC系统设图\cite{技术文档}}
+	\caption{CEE的ZDC系统设图}
 	\label{fig:det:ZDC}
 \end{figure}
 
 \section{实验布局}
 
 CEE拟利用粒子在磁场中的偏转，通过测量粒子的径迹和飞行时间实现对粒子动量的重建
-和种类鉴别。\cite{技术文档,Lyu:ConceptDesign}CEE谱仪的核心部件为大接收度的二极磁铁与置于磁场内的
+和种类鉴别。\cite{Lyu:ConceptDesign}CEE谱仪的核心部件为大接收度的二极磁铁与
+置于磁场内的
 实现三维测量的TPC；为处理束流附近的死区，磁场下游方向束流两侧布置有两组MWDC
 阵列；为实现轻粒子甄别，在TPC外和MWDC后设置有以MRPC阵列组成的飞行时间探测器
 （TOF）和时间起始探测器\TZ；最后设置有零度角量能器ZDC。整体构型如图
@@ -452,7 +454,7 @@ CEE拟利用粒子在磁场中的偏转，通过测量粒子的径迹和飞行�
 		SiPiX：硅像素定位探测器；\TZ：起始时间探测器；TPC：中心时间投影室；
 		iTOF：内飞行时间探测器；eTOF，端盖飞行时间探测器；
 		MWDC：前角多丝漂移室径迹探测器；ZDC：零度角量能器
-		\cite{技术文档,Lyu:ConceptDesign}}
+		\cite{Lyu:ConceptDesign}}
 	\label{fig:CEE:Subsystem}
 \end{figure}
 
@@ -656,7 +658,7 @@ TPC被简化为一个对空间和时间灵敏的探测器。以下是本框架�
 
 CEE采用的TPC的结构如图\ref{fig:det:TPC:Overview}所示，上部为读出板。读出板
 下方设置有一个大面积GEM膜，可以对漂移到TPC顶部的电子进行雪崩放大。读出板上
-设置有12000个读出单元\cite{技术文档,Lyu:ConceptDesign}，带电粒子
+设置有12000个读出单元\cite{Lyu:ConceptDesign}，带电粒子
 进入TPC后，其在灵敏区内产生的次级粒子将被竖直方向在读出板上投影位置的
 读出单元感应到，从而由其在读出板上的投影给出其在水平平面内的位置信息；
 我们已经知道次级粒子（电子）在TPC内近似以匀速运动，速度为
@@ -790,15 +792,15 @@ ZDC所用的事件被称作“ZDC模拟事件”。
 
 \section{事件显示}
 
-示例事件在本框架中可以利用模拟数据立即得到如图\ref{fig:EventDisplay}的显示。
-可以看到，主径迹穿过\TZ、TPC后向X轴正方向（左侧）偏转，掠过左侧的MWDC1、MWDC2、
-MWDC3和eTOF1，最终到达ZDC。
-
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./resource/EventDisplay.png}
-	\caption{模拟事件显示}\label{fig:EventDisplay}
+	\caption{示例模拟事件显示}\label{fig:EventDisplay}
 \end{figure}
+
+示例事件在本框架中可以利用模拟数据立即得到如图\ref{fig:EventDisplay}的显示。
+可以看到，主径迹穿过\TZ、TPC后向X轴正方向（左侧）偏转，掠过左侧的MWDC1、MWDC2、
+MWDC3和eTOF1，最终到达ZDC。
 
 \section{径迹测量}
 
@@ -830,32 +832,43 @@ MWDC3和eTOF1，最终到达ZDC。
 \end{figure}
 
 据图\ref{fig:result:TPC}大致估计，离子向前运动\SI{800}{\milli\meter}后偏离了约
-\SI{35}{\milli\meter}；已知离子初始方向总是沿Z轴正方向的，那么离子在TPC内的曲率半径
-$R$满足
+\SI{35(5)}{\milli\meter}；已知离子初始方向总是沿Z轴正方向的，且离子在磁场中
+在XZ平面上近似做圆周运动，由几何关系得到离子在TPC内的曲率半径$R$满足
 \begin{equation}
 (R-\SI{35}{\milli\meter})^2+(\SI{800}{\milli\meter})^2=R^2
 \end{equation}
-从而得到$R=\SI{9.16e3}{\milli\meter}$。代入到式\ref{eq:B}中，又有已知粒子带6个单位
-正电荷、磁场磁感应强度为\SI{0.5}{\tesla}竖直向下，于是有
+从而得到$R=\SI{9.16e3}{\milli\meter}$。又有已知粒子带6个单位正电荷、
+磁场磁感应强度为\SI{0.5}{\tesla}竖直向下，代入到式\ref{eq:TPC:momentum}中，
+可以得到离子动量$p$的值满足
 \begin{equation}
-p=6\mathrm{e}\cdot\SI{0.5}{\tesla}\cdot\SI{9.16}{\meter}=\SI{27.48}{\eV\second
-\meter^{-1}}=\SI{8.244e3}{\mega\eV/c}
+p=q B R=\SI{6}{e}\cdot\SI{0.5}{\tesla}\cdot\SI{9.16}{\meter}=\SI{27.48}
+{\eV\cdot\second\cdot\meter^{-1}}=\SI{8.244e3}{\mega\eV/c}
 \end{equation}
-已知入射离子质量为\SI{12}{u}，由相对论质量能量关系可以得到离子的初始动能$E$为：
+\si{e}为单位电荷。
+已知入射离子质量为\SI{12}{u}，由相对论动量能量关系可以得到离子的初始动能$E$为：
 \begin{equation}
 \begin{aligned}
 E &	=\sqrt{p^2c^2+m^2c^4}-mc^2\\
 & 	=\sqrt{(\SI{8.244e3}{\mega\eV})^2+
 		(\SI{1.1178e4}{\mega\eV})^2}-\SI{1.1178e4}{\mega\eV}\\
-&	=\SI{2.711e3}{\mega\eV}
+&	=\SI{2.7(7)e3}{\mega\eV}
 \end{aligned}\end{equation}
-真实设定的入射离子能量为$\SI{250}{\mega\eV/u}=\SI{3e3}{\mega\eV}$，在同一数量级，
+式中离子质量$m=\SI{12}{u}=\SI{1.1178e4}{\mega\eV\cdot{c}^{-2}}$。
+其中不确定度由半径上下限确定：半径取\SI{30}{\milli\meter}时的能量计算值为\SI{2.12e3}
+{\mega\eV}，\SI{40}{\milli\meter}时值为\SI{3.56e3}{\mega\eV}，因此不确定度约为
+\SI{0.7e3}{\mega\eV}。
+真实设定的入射离子能量为$\SI{250}{\mega\eV/u}=\SI{3.00e3}{\mega\eV}$，在误差范围内，
 证明本框架较正确地模拟了TPC的功能。
 
 \subsection{MWDC}
 
 粒子经过MWDC时，可以在不同层的灵敏丝上产生不同的触发；利用各层丝上产生的触发，可以确定
-粒子在MWDC不同层上经过的位置，从而确定粒子的径迹。
+粒子在MWDC不同层上经过的位置，从而确定粒子的径迹。示例数据中使用的数字化数据与CEE的
+设计原型略有区别：示例数据中
+使用了\SI{2}{\milli\meter}作为丝间距、\SI{1}{\milli\meter}
+作为灵敏丝的灵敏半径、\SI{40}{\milli\meter}作为X、U和V层的层间距；CEE设计中的参数
+本应为\SI{20}{\milli\meter}的丝间距和不均匀的层间距\cite{Lyu:ConceptDesign,
+Yi:MWDC}。
 
 以示例数据为例，粒子扫过了MWDC1、MWDC2和MWDC3的边缘部分。其中，MWDC1的输出非常少：
 
@@ -939,37 +952,6 @@ E &	=\sqrt{p^2c^2+m^2c^4}-mc^2\\
 	\label{fig:MWDC:EventDisplay}
 \end{figure}
 
-\section{零度角量能}
-
-零度角量能器的每个Tower都可以给出其灵敏区得到的能量，并分别输出。没有记录到任何事件
-的Tower不会输出，以此优化输出的结果。例如，对于ZDC模拟事件，粒子直接打在了编号为
-76-1的Tower上而被吸收，输出结果大致如代码\ref{data:ZDC}所示。
-\begin{lstlisting}[caption={ZDC输出},label={data:ZDC},firstnumber=3893,lastline=3896]
- MultiFunctionalDet  CEE_ZDC_Tower_76-1_det
- PrimitiveScorer energyDeposit
- Number of entries 1
-  copy no.: 0  energy deposit: 1552.1291707562 [MeV]
-\end{lstlisting}
-离子在进入ZDC前行进的距离约为\SI{4}{\meter}，利用LISE++计算得到能量损失只有大约
-\SI{60}{\mega\eV}，远远小于初始能量$\SI{250}{\mega\eV/u}\cdot\SI{12}{u}=
-\SI{3e3}{\mega\eV}$。考虑到ZDC构建中铅层的厚度大约四倍于闪烁体，认为这一大达
-\SI{1.5e3}{\mega\eV}的能量损失
-应当是来自于不灵敏的铅层和不锈钢外壳。粒子进入ZDC的状态如图
-\ref{fig:result:ZDC:Display}所示。
-\begin{figure}
-	\centering
-	\begin{subfigure}{0.4\textwidth}
-		\includegraphics[width=\textwidth]{./resource/ZDC-Display.png}
-		\subcaption{带电离子进入ZDC}\label{fig:result:ZDC:Display}
-	\end{subfigure}
-	\begin{subfigure}{0.4\textwidth}
-		\includegraphics[width=\textwidth]{./resource/ZDC-Tower.png}
-		\subcaption{发生信号的ZDC Tower}\label{fig:result:ZDC:Tower}
-	\end{subfigure}
-	\caption{ZDC模拟事件示意图}
-	\label{fig:result:ZDC}
-\end{figure}
-
 \section{飞行时间测量}
 
 示例事件中实际上主粒子只经过了eTOF1，并在eTOF1中留下了触发信号。发生触发的MRPC
@@ -1019,6 +1001,48 @@ $v=\frac23c$（$c$为真空光速）和已知的Y方向尺寸，可以从两个�
 
 实际实验中，这一时间还将受到电子学延迟等的影响，因此用于实验分析时需要使用标定好
 的时间信息。目前本框架的模拟忽略了这些因素的影响。
+
+\section{零度角量能}
+
+以下分析的ZDC数据都是单独进行的一次ZDC模拟事件的结果，与上述描述的示例事件不是同一次
+事件。
+
+零度角量能器的每个Tower都可以给出其灵敏区得到的能量，并分别输出。没有记录到任何事件
+的Tower不会输出，以此优化输出的结果。例如，对于ZDC模拟事件，粒子直接打在了编号为
+76-1的Tower上而被吸收，输出结果大致如代码\ref{data:ZDC}所示。
+\begin{lstlisting}[caption={ZDC输出},label={data:ZDC},firstnumber=4249,lastline=4256]
+ MultiFunctionalDet  CEE_ZDC_Tower_76-1_det
+ PrimitiveScorer energyDeposit
+ Number of entries 1
+  copy no.: 0  energy deposit: 1499.149674047 [MeV]
+\end{lstlisting}
+可以看到，离子最终被ZDC收集到的能量为\SI{1.499e3}{\mega\eV}，大约只有初始能量
+$\SI{250}{\mega\eV/u}\times\SI{12}{u}=\SI{3e3}{\mega\eV}$的一半。
+离子在进入ZDC前行进的距离约为\SI{4}{\meter}，利用LISE++计算得到能量损失只有大约
+\SI{60}{\mega\eV}，远远小于初始能量；因此这一巨大的能量损失并不是来自于各个探测器。
+考虑到ZDC构建中铅层的厚度大约四倍于闪烁体，认为这一大达\SI{1.5e3}{\mega\eV}的能量损失
+应当是来自于不灵敏的铅层和不锈钢外壳。事实上，每次重复模拟ZDC的输出都会有较大变化，
+其中在各气体探测器内的行为区别很小，最大的区别就是在ZDC上的微小入射角度偏差。同时，
+利用LISE++计算得到在\SI{10}{\milli\meter}铅层中\PrimaryParticle 会产生\SI{900}{\mega
+\eV}的能量损失，且构建ZDC时靠前的层总是是不灵敏的铅层，因此铅可以解释这一能量损失。
+
+粒子进入ZDC的状态如图
+\ref{fig:result:ZDC:Display}所示。其中，发生触发的76-1号Tower的位置如图
+\ref{fig:result:ZDC:Tower}所示。可以看到，离子从前部进入Tower，最终能量都沉积在
+铅层或闪烁体层中。
+\begin{figure}
+	\centering
+	\begin{subfigure}{0.8\textwidth}
+		\includegraphics[width=\textwidth]{./resource/ZDC-Display.png}
+		\subcaption{带电离子进入ZDC}\label{fig:result:ZDC:Display}
+	\end{subfigure}
+	\begin{subfigure}{0.8\textwidth}
+		\includegraphics[width=\textwidth]{./resource/ZDC-Tower.png}
+		\subcaption{发生信号的ZDC Tower}\label{fig:result:ZDC:Tower}
+	\end{subfigure}
+	\caption{ZDC模拟事件示意图}
+	\label{fig:result:ZDC}
+\end{figure}
 
 % }}}
 
