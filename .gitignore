@@ -40,4 +40,4 @@
 *.swp
 # Backup Files
 *.old*
-~*
+*~
