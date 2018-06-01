@@ -123,11 +123,18 @@
 \maketitle
 % 摘要
 \include{data/abstract}
+
 % 目录
-\pagestyle{empty}
+%% 章编号
+%\ctexset{
+%	chapter={
+%		name={第,章},
+%	},
+%}
+%\pagestyle{empty}
 \tableofcontents
-\newpage
-\pagestyle{fancy}
+%\newpage
+%\pagestyle{fancy}
 
 % 正文页码样式
 \mainmatter
@@ -797,7 +804,7 @@ ZDC所用的事件被称作“ZDC模拟事件”。
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.7\textwidth]{./resource/EventDisplay.png}
+	\includegraphics[width=0.8\textwidth]{./resource/EventDisplay.png}
 	\caption{示例模拟事件显示}\label{fig:EventDisplay}
 \end{figure}
 
@@ -807,7 +814,8 @@ MWDC3和eTOF1，最终到达ZDC。
 
 \section{径迹测量}
 
-径迹测量主要包括利用TPC和MWDC对粒子径迹的捕捉。
+径迹测量主要包括利用TPC和MWDC对粒子径迹的捕捉。以下分别说明本框架对TPC和MWDC的
+数字化输出和分析方法。
 
 \subsection{TPC}
 
@@ -818,9 +826,9 @@ MWDC3和eTOF1，最终到达ZDC。
 的针对每个次级电子输出。
 
 随后，本框架计算了每个
-记录单元应当产生信号的强度和时间，并产生类似下面的输出（截取部分）：
+记录单元应当产生信号的强度和时间，并产生类似代码\ref{data:TPC}的输出（截取部分）：
 
-\begin{lstlisting}[caption={TPC Cells},firstnumber=3384,lastline=3387]
+\begin{lstlisting}[caption={TPC Cells},label={data:TPC},firstnumber=3384,lastline=3387]
  >>> Cell:{1,-31} ElectronCount=7 SignalTime=7997.7270018879ns
  >>> Cell:{1,-30} ElectronCount=2 SignalTime=8000.3825638861ns
 \end{lstlisting}
@@ -831,7 +839,7 @@ MWDC3和eTOF1，最终到达ZDC。
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./resource/TPC-result.png}
-	\caption{TPC的输出结果，方框内为事件显示}\label{fig:result:TPC}
+	\caption{TPC的输出结果，方框为TPC的灵敏区域}\label{fig:result:TPC}
 \end{figure}
 
 据图\ref{fig:result:TPC}大致估计，离子向前运动\SI{800}{\milli\meter}后偏离了约
@@ -992,8 +1000,8 @@ $v=\frac23c$（$c$为真空光速）和已知的Y方向尺寸，可以从两个�
 \begin{equation}
 \frac{t_{\text{ATime}}-t_{\text{BTime}} }{2}=-\frac{y}{v}=\SI{-0.08}{\nano\second}
 \end{equation}
-得到$y=\SI{8}{\milli\meter}$。事实上，85-1模拟测量的详细数据如代码\ref{data:MRPC:85-1}
-可以看到，Y方向坐标确实在\SI{8}{\milli\meter}左右：
+得到$y=\SI{8}{\milli\meter}$。模拟详细数据如代码\ref{data:MRPC:85-1}所示
+可以看到，Y坐标确实在\SI{8}{\milli\meter}左右：
 \begin{lstlisting}[caption={eTOF1-MRPC-85-1},label={data:MRPC:85-1},firstnumber=4449,lastline=4453]
  >>> MRPC: CEE_eTOF1_box_85_MRPC_85-1_phys
    > sizeX=3mm sizeY=1000mm sizeZ=2.25mm 
@@ -1077,7 +1085,13 @@ MRPC的数字化，可以广泛地用于对与CEE采用构型相似的这三种�
 % 参考文献
 %\include{data/reference}
 \printbibliography[heading=bibintoc,title={参考文献}]
-
+%% 以下用于截去附录
+%\makeatletter
+%	\def\@currentlabel{B}\label{chap:data}
+%	\def\@currentlabel{B.1}\label{data:TPC:Track}
+%	\def\@currentlabel{B.2}\label{data:MRPC}
+%\makeatother
+%\end{document}
 % 附录
 \appendix
 \chapter{源代码仓库}\label{chap:repo}

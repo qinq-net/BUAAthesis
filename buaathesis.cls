@@ -176,7 +176,7 @@ The LaTeX template for thesis of BUAA]
 \ifbuaa@bachelor
     \ctexset{
         chapter={
-            name={第,章},
+            name={},
             number={\arabic{chapter}},
         },
         section={
@@ -760,7 +760,9 @@ The LaTeX template for thesis of BUAA]
 
 \newcommand{\announce}{%
     \clearemptydoublepage
-    \thispagestyle{empty}
+    %\thispagestyle{empty}
+    \thispagestyle{fancy}
+    \pagenumbering{gobble}
     \vspace*{54bp}
     \centerline{\bf\zihao{-2}\songti 本人声明}
     \vskip 27bp
